@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require "cobaya/cli"
+
+Cobaya::CLI.start
