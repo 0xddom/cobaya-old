@@ -1,7 +1,7 @@
 cobaya
 =================
 
-A genetic programing fuzzer to fuzz ruby interpreters
+A genetic programming fuzzer to fuzz ruby interpreters
 
 ## Setup
 
@@ -9,7 +9,13 @@ A genetic programing fuzzer to fuzz ruby interpreters
 
 ## Usage
 
-_Fill in with gem usage information._
+### Mutation
+
+To mutate a sample run the following command:
+
+    cobaya mutate <file>
+	
+The seed can be especified with the `-s` option. If not specified, 0 is used
 
 ## Development
 

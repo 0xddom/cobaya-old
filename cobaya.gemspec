@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
     s.email = ["danieldominguez05@gmail.com"]
     s.homepage = ""
     s.summary = %q{A genetic programming fuzzer for ruby}
-    s.description = %q{A genetic programing fuzzer to fuzz ruby interpreters}
+    s.description = %q{A genetic programming fuzzer to fuzz ruby interpreters}
     s.licenses = ['']
 # If you want to show a post-install message, uncomment the following lines
 #    s.post_install_message = <<-MSG
