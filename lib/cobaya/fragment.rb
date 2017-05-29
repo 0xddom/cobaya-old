@@ -7,7 +7,6 @@ class Fragment
   end
 
   def to_code
-    rewriter = ReWriterVisitor.new
-    rewriter.process tree
+    Unparser.unparse tree
   end
 end

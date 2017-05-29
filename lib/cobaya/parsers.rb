@@ -2,19 +2,19 @@ class Parsers
   def self.get(version)
     case version
     when :ruby18
-      RubyParser::V18.new
+      raise "Not supported version"
     when :ruby19
-      RubyParser::V19.new
+      Parser::Ruby19
     when :ruby20
-      RubyParser::V20.new
+      raise "Not supported version"
     when :ruby21
-      RubyParser::V21.new
+      raise "Not supported version"
     when :ruby22
-      RubyParser::V22.new
+      raise "Not supported version"
     when :ruby23
-      RubyParser::V23.new
+      raise "Not supported version"
     when :ruby24
-      RubyParser::V24.new
+      raise "Not supported version"
     else
       raise "Not supported version"
     end

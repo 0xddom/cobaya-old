@@ -9,18 +9,18 @@ module Cobaya
 
     map %w(-v --version) => :version
 
-    desc 'version', 'cobaya version'
+    desc 'version', 'Returns the current version'
     def version
       puts Cobaya::VERSION
     end
 
-    desc 'fuzz', 'cobaya fuzz'
+    desc 'fuzz', 'Start a fuzzing session'
     def fuzz
       fuzzer = Fuzzer.new
       fuzzer.run
     end
 
-    desc 'mutate [options] FILE', 'cobaya mutate [options] file'
+    desc 'mutate [options] FILE', 'Mutate a sample in a determinist way'
     option :seed, aliases: :s
     option :output, aliases: :o
     option :fragments, required: true, aliases: :f
@@ -33,9 +33,6 @@ module Cobaya
       
       mutation = Mutation.from_file file, seed, lang.to_sym
 
-      p mutation.tree
-      puts ""
-      
       mutation.mutate
     end 
   end

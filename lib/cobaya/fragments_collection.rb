@@ -24,7 +24,7 @@ class FragmentsCollection
   private
   def add_to_set(tree)
     @collection << tree
-    tree.each do |node|
+    tree.children.each do |node|
       add_to_set node if node.class.name == "Sexp"
     end
   end
