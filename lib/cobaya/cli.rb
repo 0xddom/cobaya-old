@@ -26,14 +26,25 @@ module Cobaya
     option :fragments, required: true, aliases: :f
     option :lang, aliases: :l
     def mutate(file)
-      seed = options[:seed] || 0
+      seed = (options[:seed] || 0).to_i
       lang = options[:lang] || Parsers.default
+      output = open_stream(options[:output] || '-')
       collection = FragmentsCollection.instance
       collection.init options[:fragments], lang
-      
-      mutation = Mutation.from_file file, seed, lang.to_sym
 
-      mutation.mutate
-    end 
+      SRandom.instance.init seed
+      
+      mutation = Mutation.from_file file, lang.to_sym
+      output.puts Unparser.unparse mutation.mutate
+    end
+
+    private
+    def open_stream(file)
+      if file == '-'
+        STDOUT
+      else
+        File.open file, 'w'
+      end
+    end
   end
 end

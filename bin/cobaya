@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+$VERBOSE = nil
+
 require "cobaya/cli"
 
 Cobaya::CLI.start

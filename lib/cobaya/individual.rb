@@ -1,3 +1,5 @@
-class Individual
-  attr_accessor :fragment
+module Cobaya
+  class Individual
+    attr_accessor :fragment
+  end
 end

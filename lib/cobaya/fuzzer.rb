@@ -1,10 +1,12 @@
-class Fuzzer
-
-  def initialize
-    @collection = FragmentsCollection.instance
+module Cobaya
+  class Fuzzer
     
-  end
-  
-  def run
+    def initialize
+      @collection = FragmentsCollection.instance
+      
+    end
+    
+    def run
+    end
   end
 end
