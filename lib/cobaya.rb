@@ -8,9 +8,11 @@ module Cobaya
   require 'cobaya/parsers'
 
   require 'cobaya/random'
+  require 'cobaya/crash'
   require 'cobaya/collection'
   require 'cobaya/fragment'
   require 'cobaya/individual'
   require 'cobaya/fuzzer'
   require 'cobaya/mutation'
+  require 'cobaya/executor'
 end

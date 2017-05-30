@@ -26,7 +26,7 @@ module Cobaya
     option :fragments, required: true, aliases: :f
     option :lang, aliases: :l
     def mutate(file)
-      seed = (options[:seed] || 0).to_i
+      seed = options[:seed] || 0
       lang = options[:lang] || Parsers.default
       output = open_stream(options[:output] || '-')
       collection = FragmentsCollection.instance
@@ -38,6 +38,18 @@ module Cobaya
       output.puts Unparser.unparse mutation.mutate
     end
 
+    desc 'execute [options] FILE TARGET', 'Execute the sample against the target'
+    option :crashes, aliases: :c
+    def execute(file, target)
+      executor = StdinExecutor.new file, target, (options[:crashes] || './crashes')
+
+      result = executor.execute
+      if result
+        puts "Process crashed!"
+        puts "Information collected in #{result.path}"
+      end
+    end
+    
     private
     def open_stream(file)
       if file == '-'
