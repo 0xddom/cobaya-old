@@ -14,9 +14,17 @@ module Cobaya
       puts Cobaya::VERSION
     end
 
-    desc 'fuzz', 'Start a fuzzing session'
-    def fuzz
-      fuzzer = Fuzzer.new
+    desc 'fuzz [options] TARGET', 'Starts a fuzzing session'
+    option :inputs, aliases: :i, required: true
+    option :fragments, aliases: :f, required: true
+    option :lang, aliases: :l
+    option :crashes, aliases: :c
+    def fuzz(target)
+      lang = options[:lang] || Parsers.default
+      crashes = options[:crashes] || './crashes'
+      FragmentsCollection.instance.init options[:fragments], lang
+      fuzzer = Fuzzer.new target, crashes, options[:inputs], lang
+      
       fuzzer.run
     end
 
