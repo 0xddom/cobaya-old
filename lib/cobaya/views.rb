@@ -1,7 +1,6 @@
 module Cobaya
   class View
     def initialize
-      # TODO Create spinner
       @spinner = TTY::Spinner.new '[:spinner] Fuzzing...', format: :classic
       @pastel = Pastel.new
       @crash_header = @pastel.bold '[', @pastel.red('-'), ']'
@@ -29,7 +28,6 @@ module Cobaya
     end
 
     def step
-      # Step the spinner
       @spinner.spin
     end
   end
