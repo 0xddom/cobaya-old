@@ -1,6 +1,6 @@
 module Cobaya::Generators
   class LVarGen
-    def initalize(context)
+    def initialize(context)
       @content = context
     end
 
@@ -11,7 +11,7 @@ module Cobaya::Generators
   end
 
   class IVarGen
-    def initalize(context, max_len)
+    def initialize(context, max_len)
       @content = context
       @max_len = max_len
     end
@@ -26,7 +26,7 @@ module Cobaya::Generators
   end
 
   class CVarGen
-    def initalize(context)
+    def initialize(context)
       @content = context
     end
 
@@ -37,7 +37,7 @@ module Cobaya::Generators
   end
 
   class GVarGen
-    def initalize(context, max_len)
+    def initialize(context, max_len)
       @content = context
       @max_len = max_len
     end
@@ -52,7 +52,7 @@ module Cobaya::Generators
   end
 
   class NthRefGen
-    def initalize(max)
+    def initialize(max)
       @max = max
     end
 

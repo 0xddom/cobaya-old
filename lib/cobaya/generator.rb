@@ -3,42 +3,42 @@ module Cobaya
     include SexpHelper
     
     protected
-    def any(*symbols)
+    def self.any(*symbols)
       Any.new symbols
     end
 
-    def max_child(n)
+    def self.max_child(n)
       @max_child = n
     end
 
-    def depth(n)
+    def self.depth(n)
       @depth = n
     end
     
-    def whatever
+    def self.whatever
       Whatever.new
     end
 
 
-    def optional(name)
+    def self.optional(name)
       Optional.new name
     end
 
-    def nilable(name)
+    def self.nilable(name)
       Nilable.new name
     end
     
-    def multiple(name)
-      Multiple.new name
+    def self.multiple(*options)
+      Multiple.new options
     end
 
-    def or(*options)
+    def self.or(*options)
       Or.new options
     end
 
 
     
-    def terminal(name, generator = nil)
+    def self.terminal(name, generator = nil)
       if generator
         Terminal.new name, generator
       else
@@ -46,7 +46,7 @@ module Cobaya
       end
     end
 
-    def non_terminal(name)
+    def self.non_terminal(name)
       NonTerminal.new name
     end
 
@@ -63,7 +63,7 @@ module Cobaya
     class Terminal
       def initialize(name, generator)
         @name = name
-        @generator
+        @generator = generator
       end
 
       def generate
@@ -100,8 +100,8 @@ module Cobaya
     end
 
     class Multiple
-      def initialize(name)
-        @name = name
+      def initialize(options)
+        @options = options
       end
     end
 

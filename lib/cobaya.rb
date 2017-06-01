@@ -8,7 +8,16 @@ module Cobaya
   
   require 'cobaya/version'
   require 'cobaya/parsers'
+  require 'cobaya/variables'
+  require 'cobaya/sexp_helper'
+  require 'cobaya/generator'
 
+  require 'cobaya/generators/int'
+  require 'cobaya/generators/string'
+  require 'cobaya/generators/symbol'
+  require 'cobaya/generators/variable'
+  require 'cobaya/generators/ruby19'
+  
   require 'cobaya/random'
   require 'cobaya/views'
   require 'cobaya/crash'

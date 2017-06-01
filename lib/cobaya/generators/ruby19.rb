@@ -1,13 +1,13 @@
 module Cobaya::Generators
-  class Ruby19 < BaseGenerator
+  class Ruby19 < Cobaya::BaseGenerator
 
     max_int = 4_294_967_295
     max_str_len = 2_000_000
     max_var_len = 30
-    locals = []
-    instance_vars = []
-    class_vars = []
-    globals = []
+    locals = Cobaya::VariablesStack.new
+    instance_vars = Cobaya::VariablesStack.new
+    class_vars = Cobaya::VariablesStack.new
+    globals = Cobaya::VariablesStack.new
     
     # Terminals
     terminal :true
@@ -41,10 +41,6 @@ module Cobaya::Generators
     terminal :retry
 
     # TODO: Terminar de definir las reglas
-    #       Crear clases para almacenar contexto
-    # Las clases que almacenan contexto deberian poder hacer pila
-    # Y la consulta se hace a todos los elementos de la pila
-    # En orden de prioridad
 
     
     # Non terminals
