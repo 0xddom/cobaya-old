@@ -9,7 +9,8 @@ module Cobaya::Generators
     instance_vars = Cobaya::VariablesStack.new
     class_vars = Cobaya::VariablesStack.new
     globals = Cobaya::VariablesStack.new
-    
+    consts = Cobaya::VariablesStack.new
+
     # Terminals
     terminal :true
     terminal :false
@@ -42,6 +43,7 @@ module Cobaya::Generators
     terminal :retry
 
     # TODO: Crear las clases que devuelven variables y que añaden a la pila de variables
+    #       Crear un método para guardar literales y hacer que se compruebe primero el literal y luego ya se busque por terminales o no terminales
 
     
     # Non terminals
@@ -57,11 +59,11 @@ module Cobaya::Generators
     non_terminal :erange, :int, :int
     non_terminal :const, nilable(any :cbase, :lvar)
     non_terminal :defined?, :lvar
-    non_terminal :lvasgn, :sym, whatever # Cambiar por un generador que devuelve el símbolo y lo agrega al contexto
-    non_terminal :ivasgn, :sym, whatever
-    non_terminal :cvasgn, :sym, whatever
-    non_terminal :gvasgn, :sym, whatever
-    non_terminal :casgn, :sym, whatever
+    non_terminal :lvasgn, Lvar.new(locals), whatever # Cambiar por un generador que devuelve el símbolo y lo agrega al contexto
+    non_terminal :ivasgn, IVar.new(instance_vars), whatever
+    non_terminal :cvasgn, CVar.new(class_vars), whatever
+    non_terminal :gvasgn, GVar.new(globals), whatever
+    non_terminal :casgn, Const.new(consts), whatever
     non_terminal :send, nilable(any :lvar, :gvar, :cvar, :ivar), :sym, multiple(whatever), optional(:block_pass)
 #    non_terminal :csend
     non_terminal :mlhs, any(:mlhs, multiple(any :lvasgn, :gvasgn, :cvasgn, :ivasgn, :send))

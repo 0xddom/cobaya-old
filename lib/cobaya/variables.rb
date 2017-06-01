@@ -1,11 +1,11 @@
 module Cobaya
   class VariablesStack
     def initialize
-      @levels = [[]]
+      @levels = [Set.new]
     end
 
     def push
-      @levels.push []
+      @levels.push Set.new
     end
 
     def pop

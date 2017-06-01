@@ -1,114 +1,71 @@
 module Cobaya
   class BaseGenerator
     include SexpHelper
+
+    def self.generate(root)
+      @@context = GeneratorContext.new
+    end
     
-    protected
-    def self.any(*symbols)
-      Any.new symbols
+    def self.get
+      if @@context.max_depth_reached
+        @@context.terminals.values.sample
+      else
+        @@context.all.values.sample
+      end
     end
 
     def self.max_child(n)
-      @max_child = n
+      @@context.max_child = n
     end
 
     def self.depth(n)
-      @depth = n
+      @@context.depth = n
     end
     
+    def self.any(*symbols)
+      Cobaya::Combinators::Any.new @@context, symbols
+    end    
+
     def self.whatever
-      Whatever.new
+      Cobaya::Combinators::Whatever.new @@context
     end
 
-
     def self.optional(name)
-      Optional.new name
+      Cobaya::Combinators::Optional.new @@context, name
     end
 
     def self.nilable(name)
-      Nilable.new name
+      Cobaya::Combinators::Nilable.new @@context, name
     end
     
     def self.multiple(*options)
-      Multiple.new options
+      Cobaya::Combinators::Multiple.new @@context, options
     end
-
-    def self.or(*options)
-      Or.new options
-    end
-
-
     
     def self.terminal(name, generator = nil)
-      if generator
-        Terminal.new name, generator
+      @@context.terminals[name] = (if generator
+        Cobaya::Combinators::Terminal.new @@context, name, generator
       else
-        Literal.new name
-      end
+        Cobaya::Combinators::Literal.new @@context, name
+      end)
     end
 
     def self.non_terminal(name)
-      NonTerminal.new name
+      @@context.non_terminals[name] = Cobaya::Combinators::NonTerminal.new @@context, name
     end
+  end
 
-    private
-    class Whatever
-    end
+  class GeneratorContext
 
-    class Any
-      def initialize(*symbols)
-        @symbols = symbols
-      end
-    end
+    attr_accessor :terminals, :non_terminals
+    attr_reader :max_depth_reached
+    attr_accessor :depth, :max_child
+    
+    def initialize
+      @terminals = {}
+      @non_terminals = {}
 
-    class Terminal
-      def initialize(name, generator)
-        @name = name
-        @generator = generator
-      end
-
-      def generate
-        s @name, @generator.generate
-      end
-    end
-
-    class Literal
-      def initialize(name)
-        @name = name
-      end
-
-      def generate
-        s @name
-      end
-    end
-
-    class NonTerminal
-      def initialize(name)
-        @name = name
-      end
-    end
-
-    class Optional
-      def initialize(name)
-        @name = name
-      end
-    end
-
-    class Nilable
-      def initialize(name)
-        @name = name
-      end
-    end
-
-    class Multiple
-      def initialize(options)
-        @options = options
-      end
-    end
-
-    class Or
-      def initialize(options)
-        @options = options
-      end
+      @max_depth_reached = false
     end
   end
 end

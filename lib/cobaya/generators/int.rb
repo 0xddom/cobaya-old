@@ -4,9 +4,13 @@ module Cobaya::Generators
       @limit
     end
 
-    def generate
+    def generate(neg = true)
       n = rand @limit
-      if rand < 0.5 then n else -n end
+      if neg
+        if rand < 0.5 then n else -n end
+      else
+        n
+      end
     end
   end
 end
