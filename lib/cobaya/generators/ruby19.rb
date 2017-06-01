@@ -41,7 +41,7 @@ module Cobaya::Generators
     terminal :lambda
     terminal :retry
 
-    # TODO: Terminar de definir las reglas
+    # TODO: Crear las clases que devuelven variables y que añaden a la pila de variables
 
     
     # Non terminals
