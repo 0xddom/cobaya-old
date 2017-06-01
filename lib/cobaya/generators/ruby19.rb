@@ -1,3 +1,4 @@
+# coding: utf-8
 module Cobaya::Generators
   class Ruby19 < Cobaya::BaseGenerator
 
@@ -44,71 +45,71 @@ module Cobaya::Generators
 
     
     # Non terminals
-    non_terminal :dstr
-    non_terminal :dsym
-    non_terminal :xstr
-    non_terminal :regexp
-    non_terminal :array
-    non_terminal :splat
-    non_terminal :pair
-    non_terminal :hash
-    non_terminal :irange
-    non_terminal :erange
-    non_terminal :const
-    non_terminal :defined?
-    non_terminal :lvasgn
-    non_terminal :ivasgn
-    non_terminal :cvasgn
-    non_terminal :gvasgn
-    non_terminal :casgn
-    non_terminal :send
-    non_terminal :csend
-    non_terminal :mlhs
-    non_terminal :masgn
-    non_terminal :op_asgn
-    non_terminal :or_asgn
-    non_terminal :and_asgn
-    non_terminal :class
-    non_terminal :module
-    non_terminal :sclass
-    non_terminal :def
-    non_terminal :sdef
-    non_terminal :undef
-    non_terminal :alias
-    non_terminal :args
-    non_terminal :optarg
-    non_terminal :kwoptarg
-    non_terminal :arg_expr
-    non_terminal :restarg_expr
-    non_terminal :blockarg_expr
-    non_terminal :super
-    non_terminal :yield
-    non_terminal :block
-    non_terminal :block_pass
-    non_terminal :and
-    non_terminal :or
-    non_terminal :not
-    non_terminal :if
-    non_terminal :when
-    non_terminal :case
-    non_terminal :begin
-    non_terminal :while
-    non_terminal :until
-    non_terminal :while_post
-    non_terminal :until_post
-    non_terminal :for
-    non_terminal :break
-    non_terminal :next
-    non_terminal :redo
-    non_terminal :return
-    non_terminal :resbody
-    non_terminal :rescue
-    non_terminal :ensure
-    non_terminal :preexe
-    non_terminal :postexe
-    non_terminal :iflipflop
-    non_terminal :eflipflop
-    non_terminal :match_current_line
-    non_terminal :match_with_lvasgn
+    non_terminal :dstr, multiple(whatever)
+    non_terminal :dsym, multiple(whatever)
+    non_terminal :xstr, multiple(whatever)
+    non_terminal :regexp, multiple(whatever), :regopt
+    non_terminal :array, multiple(whatever)
+    non_terminal :splat, :lvar
+    non_terminal :pair, :sym, whatever
+    non_terminal :hash, multiple(:pair)
+    non_terminal :irange, :int, :int
+    non_terminal :erange, :int, :int
+    non_terminal :const, nilable(any :cbase, :lvar)
+    non_terminal :defined?, :lvar
+    non_terminal :lvasgn, :sym, whatever # Cambiar por un generador que devuelve el símbolo y lo agrega al contexto
+    non_terminal :ivasgn, :sym, whatever
+    non_terminal :cvasgn, :sym, whatever
+    non_terminal :gvasgn, :sym, whatever
+    non_terminal :casgn, :sym, whatever
+    non_terminal :send, nilable(any :lvar, :gvar, :cvar, :ivar), :sym, multiple(whatever), optional(:block_pass)
+#    non_terminal :csend
+    non_terminal :mlhs, any(:mlhs, multiple(any :lvasgn, :gvasgn, :cvasgn, :ivasgn, :send))
+    non_terminal :masgn, :mlhs, :array
+    non_terminal :op_asgn, any(:send, :lvasgn, :gvasgn, :cvasgn, :ivasgn), :sym, whatever
+    non_terminal :or_asgn, any(:send, :lvasgn, :gvasgn, :cvasgn, :ivasgn), whatever
+    non_terminal :and_asgn, any(:send, :lvasgn, :gvasgn, :cvasgn, :ivasgn), whatever
+    non_terminal :class, :const, nilable(:const), whatever
+    non_terminal :module, :const, whatever
+    non_terminal :sclass, :lvar, whatever
+    non_terminal :def, :args, nilable(whatever)
+    non_terminal :defs, :self, :args, nilable(whatever)
+    non_terminal :undef, multiple(:sym, :dsym)
+    non_terminal :alias, :sym, multiple(:sym, :dsym)
+    non_terminal :args, multiple(:arg), multiple(:optarg), optional(:restarg), optional(:kwarg), optional(:blockarg)
+    non_terminal :optarg, :sym, whatever
+    non_terminal :kwoptarg, :sym, whatever
+    #non_terminal :arg_expr
+    #non_terminal :restarg_expr
+    #non_terminal :blockarg_expr
+    non_terminal :super, optional(multiple(whatever))
+    non_terminal :yield, optional(multiple(whatever))
+    non_terminal :block, :send, :args, :begin
+    non_terminal :block_pass, :lvar
+    non_terminal :and, whatever, whatever
+    non_terminal :or, whatever, whatever
+    non_terminal :not, whatever
+    non_terminal :if, whatever, nilable(whatever), nilable(whatever)
+    non_terminal :when, multiple(whatever)
+    non_terminal :case, whatever, multiple(:when), whatever
+    non_terminal :begin, optional(multiple whatever)
+    non_terminal :while, whatever, whatever
+    non_terminal :until, whatever, whatever
+    non_terminal :while_post, whatever, whatever
+    non_terminal :until_post, whatever, whatever
+    non_terminal :for, :lvasgn, whatever, whatever
+    non_terminal :break, whatever
+    non_terminal :next, whatever
+    non_terminal :redo, whatever
+    non_terminal :return, whatever
+    non_terminal :resbody, :array, :lvasgn, whatever
+    non_terminal :rescue, whatever, multiple(:resbody), nilable(whatever)
+    non_terminal :ensure, whatever, whatever
+    non_terminal :preexe, whatever
+    non_terminal :postexe, whatever
+    non_terminal :iflipflop, any(:lvar, :cvar, :gvar, :ivar), any(:lvar, :cvar, :gvar, :ivar)
+    non_terminal :eflipflop, any(:lvar, :cvar, :gvar, :ivar), any(:lvar, :cvar, :gvar, :ivar)
+    non_terminal :match_current_line, :regexp
+    non_terminal :match_with_lvasgn, :regexp, :lvar
   end
 end
