@@ -59,7 +59,7 @@ module Cobaya::Generators
     non_terminal :erange, :int, :int
     non_terminal :const, nilable(any :cbase, :lvar)
     non_terminal :defined?, :lvar
-    non_terminal :lvasgn, Lvar.new(locals), whatever # Cambiar por un generador que devuelve el símbolo y lo agrega al contexto
+    non_terminal :lvasgn, LVar.new(locals), whatever # Cambiar por un generador que devuelve el símbolo y lo agrega al contexto
     non_terminal :ivasgn, IVar.new(instance_vars), whatever
     non_terminal :cvasgn, CVar.new(class_vars), whatever
     non_terminal :gvasgn, GVar.new(globals), whatever
@@ -71,7 +71,7 @@ module Cobaya::Generators
     non_terminal :op_asgn, any(:send, :lvasgn, :gvasgn, :cvasgn, :ivasgn), :sym, whatever
     non_terminal :or_asgn, any(:send, :lvasgn, :gvasgn, :cvasgn, :ivasgn), whatever
     non_terminal :and_asgn, any(:send, :lvasgn, :gvasgn, :cvasgn, :ivasgn), whatever
-    non_terminal :class, :const, nilable(:const), whatever
+    non_terminal :class, action {|_| instance_vars.push; locals.push; class_vars.push}, :const, nilable(:const), whatever
     non_terminal :module, :const, whatever
     non_terminal :sclass, :lvar, whatever
     non_terminal :def, :args, nilable(whatever)

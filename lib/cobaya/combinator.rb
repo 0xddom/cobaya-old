@@ -11,6 +11,10 @@ module Cobaya::Combinators
     def generate
       raise "Override this method!"
     end
+
+    def include?
+      true
+    end
   end
 
 end

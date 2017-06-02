@@ -5,6 +5,11 @@ module Cobaya::Combinators
      end
      
      def generate
+       if @context.max_depth_reached?
+         @context.terminals.values.sample
+       else
+         @context.all.values.sample
+       end
      end
    end
    
@@ -23,6 +28,11 @@ module Cobaya::Combinators
      def initialize(context, name)
        super context
        @name = name
+       @prob = 0.2
+     end
+
+     def include?
+       rand > @prob
      end
    end
    
@@ -37,6 +47,22 @@ module Cobaya::Combinators
      def initialize(context, options)
        super context
        @options = options
+     end
+   end
+
+   class Action
+     def initialize(context, returns = false, &block)
+       super context
+       @block = block
+       @returns = returns
+     end
+
+     def generate
+       @block.call @context
+     end
+
+     def include?
+       @returns
      end
    end
 end
