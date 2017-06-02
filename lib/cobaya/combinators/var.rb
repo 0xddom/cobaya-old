@@ -1,11 +1,9 @@
 module Cobaya::Combinators
-  class Var
+  class Var < Combinator
     def initialize(context, vars)
       super context
       @vars = vars
     end
-    
-    abstract_method :name
     
     def generate
       n = name
@@ -43,4 +41,25 @@ module Cobaya::Combinators
       "Const#{IntGen.new(10_000).generate false}".to_sym
     end
   end
+
+  def lvar(locals)
+    LVar.new @context, locals
+  end
+
+  def ivar(instance_vars)
+    IVar.new @context, instance_vars
+  end
+
+  def cvar(class_vars)
+    CVar.new @context, class_vars
+  end
+
+  def gvar(globals)
+    GVar.new @context, globals
+  end
+
+  def const(consts)
+    Const.new @context, consts
+  end
+    
 end

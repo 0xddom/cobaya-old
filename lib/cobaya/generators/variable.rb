@@ -61,4 +61,24 @@ module Cobaya::Generators
     end
   end
 
+  def lvar_g(locals)
+    LVarGen.new locals
+  end
+  
+  def ivar_g(instance_vars, max_len)
+    IVarGen.new instance_vars, max_len
+  end
+  
+  def cvar_g(class_vars)
+    CVarGen.new class_vars
+  end
+  
+  def gvar_g(globals, max_len)
+    GVarGen.new globals, max_len
+  end
+  
+  def nthref_g(max_int)
+    NthRefGen.new max_int
+  end
+  
 end

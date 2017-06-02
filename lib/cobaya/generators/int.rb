@@ -13,4 +13,12 @@ module Cobaya::Generators
       end
     end
   end
+
+  def int(max_int)
+    IntGen.new max_int
+  end
+
+  def float(max_float)
+    IntGen.new max_float.to_f
+  end
 end

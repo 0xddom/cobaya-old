@@ -34,7 +34,7 @@ module Cobaya
     option :fragments, required: true, aliases: :f
     option :lang, aliases: :l
     def mutate(file)
-      seed = options[:seed] || 0
+      seed = options[:seed].to_i || Time.now.to_i
       lang = options[:lang] || Parsers.default
       output = open_stream(options[:output] || '-')
       collection = FragmentsCollection.instance
@@ -56,6 +56,11 @@ module Cobaya
         puts "Process crashed!"
         puts "Information collected in #{result.path}"
       end
+    end
+
+    desc 'generate', 'Generates ruby code'
+    def generate
+      Cobaya::Generators::Ruby19.new
     end
     
     private

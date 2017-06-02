@@ -10,12 +10,17 @@ module Cobaya
   require 'cobaya/parsers'
   require 'cobaya/variables'
   require 'cobaya/sexp_helper'
-  require 'cobaya/generator'
-
+  require 'cobaya/combinator'
+  require 'cobaya/combinators/common'
+  require 'cobaya/combinators/nodes'
+  require 'cobaya/combinators/var'
+  
   require 'cobaya/generators/int'
   require 'cobaya/generators/string'
   require 'cobaya/generators/symbol'
   require 'cobaya/generators/variable'
+  require 'cobaya/generator'
+
   require 'cobaya/generators/ruby19'
   
   require 'cobaya/random'

@@ -1,5 +1,5 @@
 module Cobaya::Combinators
-   class Whatever
+   class Whatever < Combinator
      def initialize(context)
        super context
      end
@@ -13,7 +13,7 @@ module Cobaya::Combinators
      end
    end
    
-   class Any
+   class Any < Combinator
      def initialize(context, *symbols)
        super context
        @symbols = symbols
@@ -24,7 +24,7 @@ module Cobaya::Combinators
      end
    end
    
-   class Optional
+   class Optional < Combinator
      def initialize(context, name)
        super context
        @name = name
@@ -36,21 +36,21 @@ module Cobaya::Combinators
      end
    end
    
-   class Nilable
+   class Nilable < Combinator
      def initialize(context, name)
        super context
        @name = name
      end
    end
    
-   class Multiple
+   class Multiple < Combinator
      def initialize(context, options)
        super context
        @options = options
      end
    end
 
-   class Action
+   class Action < Combinator
      def initialize(context, returns = false, &block)
        super context
        @block = block
@@ -65,4 +65,29 @@ module Cobaya::Combinators
        @returns
      end
    end
+
+   def any(*symbols)
+     Cobaya::Combinators::Any.new @context, symbols
+   end    
+   
+   def whatever
+     Cobaya::Combinators::Whatever.new @context
+   end
+   
+   def optional(name)
+     Cobaya::Combinators::Optional.new @context, name
+   end
+   
+   def nilable(name)
+     Cobaya::Combinators::Nilable.new @context, name
+   end
+   
+   def multiple(*options)
+     Cobaya::Combinators::Multiple.new @context, options
+   end
+   
+   def action(returns = false, &block)
+     Cobaya::Combinators::Action.new @context, returns, &block
+   end
+   
 end
