@@ -58,9 +58,11 @@ module Cobaya
       end
     end
 
-    desc 'generate', 'Generates ruby code'
-    def generate
-      Cobaya::Generators::Ruby19.new
+    desc 'generate ROOT', 'Generates ruby code'
+    def generate(root)
+      generator = Cobaya::Generators::Ruby19.new
+      tree = generator.generate root.to_sym
+      puts Unparser.unparse tree
     end
     
     private

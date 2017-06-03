@@ -17,7 +17,7 @@ module Cobaya
     end
 
     def empty?
-      not @levels.any { |level| not level.empty? }
+      not @levels.any? { |level| not level.empty? }
     end
 
     def sample

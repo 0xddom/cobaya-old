@@ -15,6 +15,10 @@ module Cobaya::Combinators
     def include?
       true
     end
+
+    def generate?
+      include?
+    end
   end
 
 end

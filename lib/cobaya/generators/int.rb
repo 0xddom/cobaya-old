@@ -1,24 +1,40 @@
+##
+# This part of the module defines the generators related with numbers
 module Cobaya::Generators
-  class IntGen
-    def initialize(limit)
-      @limit
+
+  ##
+  # A generator that creates random numbers
+  #
+  # :reek:BooleanParameter
+  class NumGen
+    def initialize(limit, neg = true)
+      @limit = limit
+      @neg = neg
     end
 
-    def generate(neg = true)
-      n = rand @limit
-      if neg
-        if rand < 0.5 then n else -n end
+    def generate
+      new_num = rand @limit
+      if @neg && rand < 0.5
+        -new_num
       else
-        n
+        new_num
       end
     end
   end
 
+  ##
+  # Returns an integer generator
+  #
+  # :reek:UtilityFunction
   def int(max_int)
-    IntGen.new max_int
+    NumGen.new max_int
   end
 
+  ##
+  # Returns a float generator
+  #
+  # :reek:UtilityFunction
   def float(max_float)
-    IntGen.new max_float.to_f
+    NumGen.new max_float.to_f
   end
 end

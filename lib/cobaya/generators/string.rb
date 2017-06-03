@@ -7,7 +7,15 @@ module Cobaya::Generators
     end
 
     def generate
-      "STRING" # TODO
+      source.shuffle[0,@max_len].join
+    end
+
+    def source
+      if @ascii_only
+        [*('a'..'z'),*('0'..'9')]
+      else
+        (0..255).to_a.map(&:chr)
+      end
     end
   end
 

@@ -1,7 +1,15 @@
 module Cobaya::Generators
-  class LVarGen
+  class VarGen
+    attr_reader :context
+    
     def initialize(context)
-      @content = context
+      @context = context
+    end
+  end
+  
+  class LVarGen < VarGen
+    def initialize(context)
+      super context
     end
 
     def generate
@@ -10,24 +18,24 @@ module Cobaya::Generators
     end
   end
 
-  class IVarGen
+  class IVarGen < VarGen
     def initialize(context, max_len)
-      @content = context
+      super context
       @max_len = max_len
     end
 
     def generate
       if context.empty?
-        "@#{StrGen.new(@max_len).generate}".to_sym
+        "@ivar_#{StrGen.new(@max_len, true).generate}".to_sym
       else
         context.sample
       end
     end
   end
 
-  class CVarGen
+  class CVarGen < VarGen
     def initialize(context)
-      @content = context
+      super context
     end
 
     def generate
@@ -36,15 +44,15 @@ module Cobaya::Generators
     end
   end
 
-  class GVarGen
+  class GVarGen < VarGen
     def initialize(context, max_len)
-      @content = context
+      super context
       @max_len = max_len
     end
 
     def generate
       if context.empty?
-        "$#{StrGen.new(@max_len).generate}".to_sym
+        "$gvar_#{StrGen.new(@max_len, true).generate}".to_sym
       else
         context.sample
       end
@@ -57,7 +65,7 @@ module Cobaya::Generators
     end
 
     def generate
-      "$#{IntGen.new(max).generate}".to_sym
+      "$#{NumGen.new(@max, false).generate}".to_sym
     end
   end
 
