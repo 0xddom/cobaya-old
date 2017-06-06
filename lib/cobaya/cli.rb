@@ -28,6 +28,15 @@ module Cobaya
       fuzzer.run
     end
 
+    desc 'gpfuzz [options] TARGET', 'Starts a fuzzing session using GP'
+    option :crashes, aliases: :c
+    def gpfuzz(target)
+      crashes = options[:crashes] || './crashes'
+      fuzzer = GPFuzzer.new target, crashes
+      
+      fuzzer.run
+    end
+
     desc 'mutate [options] FILE', 'Mutate a sample in a determinist way'
     option :seed, aliases: :s
     option :output, aliases: :o

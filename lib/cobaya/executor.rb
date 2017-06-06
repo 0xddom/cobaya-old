@@ -12,7 +12,6 @@ module Cobaya
 
     def execute
       raise "Forking forbidden" unless Process.respond_to? :fork
-      
       pid = fork do
         run_target
       end
@@ -26,8 +25,8 @@ module Cobaya
 
     private
     def process_status(status)
-      unless status.exitstatus == 0
-        crash = Crash.new status.pid
+      unless status.success?
+        crash = Crash.new status
         crash.stdout = @stdout.path
         crash.stderr = @stderr.path
         crash.stdin = @file

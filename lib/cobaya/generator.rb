@@ -39,6 +39,10 @@ module Cobaya
         {}.merge @terminals.merge @non_terminals
       end
     end
+
+    def random_non_terminal
+      @non_terminals.keys.sample
+    end
   end
   
   class BaseGenerator
@@ -64,6 +68,10 @@ module Cobaya
 
     def max_depth(n)
       @context.max_depth = n
+    end
+
+    def random_non_terminal
+      @context.random_non_terminal
     end
   end
 end

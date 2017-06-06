@@ -28,7 +28,7 @@ module Cobaya
     end
 
     def step
-      @spinner.spin
+      puts @spinner.spin
     end
   end
 end
