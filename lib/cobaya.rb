@@ -4,6 +4,8 @@ module Cobaya
   require 'singleton'
   require 'set'
   require 'tty-spinner'
+  require 'ruby_parser'
+  require 'flog'
   require 'pastel'
   
   require 'cobaya/version'
@@ -22,12 +24,15 @@ module Cobaya
   require 'cobaya/generator'
 
   require 'cobaya/generators/ruby19'
+
+  require 'cobaya/mutators/generative'
   
   require 'cobaya/random'
   require 'cobaya/views'
   require 'cobaya/population'
   require 'cobaya/crash'
   require 'cobaya/collection'
+  require 'cobaya/fitness'
   require 'cobaya/fragment'
   require 'cobaya/individual'
   require 'cobaya/fuzzer'

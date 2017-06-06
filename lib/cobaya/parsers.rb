@@ -34,6 +34,29 @@ module Parser::AST
         child.class.name == "Parser::AST::Node"
       end
     end
+
+    def leaf_count
+      if leaf?
+        1
+      else
+        sum = 0
+        children.each do |child|
+          val = child.class.name == "Parser::AST::Node" ? child.leaf_count : 1
+          sum += val
+        end
+        sum
+      end
+    end
+
+    def depth
+      if leaf?
+        1
+      else
+        1 + children.map { |child|
+          child.class.name == "Parser::AST::Node" ? child.depth : 1
+        }.max
+      end
+    end
   end
 end
 

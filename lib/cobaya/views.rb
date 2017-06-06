@@ -13,22 +13,33 @@ module Cobaya
 
     def banner
       puts @banner
+      self
     end
 
     def log_crash(crash)
       puts "#{@crash_header} #{crash.to_s}"
+      self
     end
 
     def info(*msg)
       puts "#{@info} #{msg.join ' '}"
+      self
     end
 
     def ok(*msg)
       puts "#{@ok} #{msg.join ' '}"
+      self
     end
 
-    def step
-      puts @spinner.spin
+    def nl
+      puts ''
+      self
+    end
+    
+    def step(n)
+      @spinner.spin
+      print " (Generation #{n})"
+      self
     end
   end
 end

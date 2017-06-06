@@ -4,7 +4,7 @@ module Cobaya
       @view = View.new
       @target = target
       @crashes = crashes
-      @population = Population.new
+      @population = Population.new 
     end
 
     def run
@@ -13,6 +13,7 @@ module Cobaya
       @view.ok 'Fuzzer ready'
       loop do
         @population.individuals.each do |indv|
+          fitness = indv.fitness
           
           output_file = File.open '/tmp/current_sample_file.rb', 'w'
           indv.write_to_io output_file
@@ -24,10 +25,12 @@ module Cobaya
           if result
             @view.log_crash result
           else
-            @view.step
+            @view.step @population.generation
           end
+
+          fitness.feedback nil, result
         end
-        @view.info "New generation"
+        @population.breed
       end
     end
 

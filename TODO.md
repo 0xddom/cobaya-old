@@ -1,11 +1,8 @@
 TODO
 ========
 
-* Implement unary mutations
-* Implement crossover
-* Implement execution
+Escribir la clase que parsea ficheros de CoverageSanitizer
 
-## Parser & Unparser
+Escribir el algoritmo del score de feedback
 
-Cambiar los parsers por los de la gem parsers y poner la gema unparsers como rewriter.
-Quitar sexp_extensions.rb y poner el Unparser en rewriter.rb.
+Escribir el crossover

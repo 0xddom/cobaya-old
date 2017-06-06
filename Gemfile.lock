@@ -109,6 +109,7 @@ PLATFORMS
 
 DEPENDENCIES
   cobaya!
+  flog
   parser
   pastel
   rdoc
