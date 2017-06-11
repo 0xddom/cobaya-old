@@ -55,7 +55,9 @@ module Cobaya
     end
     
     def generate(root = :begin)
-      @context.get(root).generate
+      gen = @context.get(root)
+      #puts gen.debug
+      gen.generate
     end
     
     def get

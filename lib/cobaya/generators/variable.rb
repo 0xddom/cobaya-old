@@ -13,7 +13,16 @@ module Cobaya::Generators
     end
 
     def generate
-      raise "No local variables to choose from!" if context.empty?
+      #raise "No local variables to choose from!" if context.empty?
+      return nil if context.empty?
+      context.sample
+    end
+  end
+
+  class ConstGen < VarGen
+    def generate
+      #raise "No const to choose from!" if context.empty?
+      return nil if context.empty?
       context.sample
     end
   end
@@ -39,7 +48,8 @@ module Cobaya::Generators
     end
 
     def generate
-      raise "No class variables to choose from!" if context.empty?
+      #raise "No class variables to choose from!" if context.empty?
+      return nil if context.empty?
       "@@#{context.sample}".to_sym
     end
   end
@@ -87,6 +97,10 @@ module Cobaya::Generators
   
   def nthref_g(max_int)
     NthRefGen.new max_int
+  end
+
+  def const_g(consts)
+    ConstGen.new consts
   end
   
 end

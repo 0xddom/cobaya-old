@@ -1,9 +1,10 @@
 module Cobaya
   class View
+    include Singleton
     def initialize
       @spinner = TTY::Spinner.new '[:spinner] Fuzzing...', format: :classic
       @pastel = Pastel.new
-      @crash_header = @pastel.bold '[', @pastel.red('-'), ']'
+      @err = @pastel.bold '[', @pastel.red('-'), ']'
       @banner = @pastel.bold ('[' + @pastel.green('+') +
                               '] cobaya ruby fuzzer, version ' +
                               Cobaya::VERSION)
@@ -17,7 +18,7 @@ module Cobaya
     end
 
     def log_crash(crash)
-      puts "#{@crash_header} #{crash.to_s}"
+      puts "#{@err} #{crash.to_s}"
       self
     end
 
@@ -28,6 +29,11 @@ module Cobaya
 
     def ok(*msg)
       puts "#{@ok} #{msg.join ' '}"
+      self
+    end
+
+    def err(*msg)
+      puts "#{@err} #{msg.join ' '}"
       self
     end
 

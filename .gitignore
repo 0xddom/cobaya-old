@@ -3,3 +3,5 @@ crashes
 tmp
 .#*
 doc
+population
+*.sancov

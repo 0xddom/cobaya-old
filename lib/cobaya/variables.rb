@@ -1,7 +1,10 @@
 module Cobaya
   class VariablesStack
-    def initialize
+    attr_reader :label
+    
+    def initialize(label)
       @levels = [Set.new]
+      @label = label
     end
 
     def push
@@ -22,7 +25,7 @@ module Cobaya
 
     def sample
       @levels.reverse_each do |level|
-        return level.sample unless level.empty?
+        return level.to_a.sample unless level.empty?
       end
     end
   end

@@ -30,9 +30,11 @@ module Cobaya
 
     desc 'gpfuzz [options] TARGET', 'Starts a fuzzing session using GP'
     option :crashes, aliases: :c
+    option :population, aliases: :p
     def gpfuzz(target)
       crashes = options[:crashes] || './crashes'
-      fuzzer = GPFuzzer.new target, crashes
+      population = options[:population] || './population'
+      fuzzer = GPFuzzer.new target, crashes, population
       
       fuzzer.run
     end
@@ -67,11 +69,11 @@ module Cobaya
       end
     end
 
-    desc 'generate ROOT', 'Generates ruby code'
+    desc 'generate [options] ROOT', 'Generates ruby code'
+    option :sexp, aliases: :s, type: :boolean
     def generate(root)
       generator = Cobaya::Generators::Ruby19.new
-      tree = generator.generate root.to_sym
-      puts Unparser.unparse tree
+      rec_generate generator, root, options[:sexp]
     end
     
     private
@@ -80,6 +82,22 @@ module Cobaya
         STDOUT
       else
         File.open file, 'w'
+      end
+    end
+
+    def rec_generate(generator, root, sexp)
+      tree = generator.generate root.to_sym
+      if sexp
+        p tree
+      else
+        begin
+          p tree
+          puts "=" * 50
+          puts Unparser.unparse tree
+        rescue Exception => e
+          puts "Retry #{e}"
+          rec_generate generator, root, sexp
+        end
       end
     end
   end

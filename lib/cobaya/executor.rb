@@ -5,7 +5,10 @@ module Cobaya
       @file = file
       @timeout = 3
       @signal = 9 # KILL
-      @crashes = crashes
+      @crashes_dir = crashes
+      @env = {
+        'ASAN_OPTIONS' => 'coverage=1'
+      }
 
       set_output_files
     end
@@ -30,7 +33,7 @@ module Cobaya
         crash.stdout = @stdout.path
         crash.stderr = @stderr.path
         crash.stdin = @file
-        crash.collect @crashes
+        crash.collect @crashes_dir
 
         crash
       end
@@ -40,7 +43,7 @@ module Cobaya
       $stdin.reopen File.new @file
       $stdout.reopen @stdout
       $stderr.reopen @stderr
-      exec [@target, @target]
+      exec @env, [@target, @target]
     end
 
     def set_output_files

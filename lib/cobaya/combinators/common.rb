@@ -24,6 +24,11 @@ module Cobaya::Combinators
       choice.generate
     end
 
+    def debug
+      check
+      "(WHATEVER choice: #{@choice.debug})"
+    end
+
     def include?
       check
       @choice.include?
@@ -45,11 +50,20 @@ module Cobaya::Combinators
   class Any < Combinator
     def initialize(context, *symbols)
       super context
-      @symbols = symbols
+      @symbols = *symbols
     end
     
     def generate
-      @symbols.sample.generate
+      choice = @symbols.sample
+      if choice.respond_to? :generate
+        choice.generate
+      else
+        context.get(choice)&.generate || choice
+      end
+    end
+
+    def debug
+      "(ANY options: (#{@symbols.map(&:to_s).join ' '}))"
     end
   end
 
@@ -57,10 +71,10 @@ module Cobaya::Combinators
   # A combinator the either returns a node especified
   # by the internal combinator or don't returns anything.
   class Optional < Combinator
-    def initialize(context, name)
+    def initialize(context, name, prob = 0.2)
       super context
       @name = name
-      @prob = 0.2
+      @prob = prob
     end
     
     def include?
@@ -68,7 +82,15 @@ module Cobaya::Combinators
     end
 
     def generate
-      @name.generate
+      if @name.respond_to? :generate
+        @name.generate
+      else
+        context.get(@name)&.generate || @name
+      end
+    end
+
+    def debug
+      "(OPTIONAL #{}"
     end
   end
 
@@ -76,15 +98,19 @@ module Cobaya::Combinators
   # A combinator that returns a node especified by the
   # internal combinator or returns nil.
   class Nilable < Combinator
-    def initialize(context, name)
+    def initialize(context, name, prob = 0.2)
       super context
       @name = name
-      @prob = 0.2
+      @prob = prob
     end
 
     def generate
-      if rand < @prob
-        @name.generate
+      if rand >= @prob
+        if @name.respond_to? :generate
+          @name.generate
+        else
+          context.get(@name)&.generate || @name
+        end
       end
     end
   end
@@ -110,11 +136,43 @@ module Cobaya::Combinators
         if choice.respond_to? :generate
           new_child = choice.generate
         else
-          new_child = choice if @force
+          if @force
+            new_child = choice
+          else
+            new_child = context.get(choice)&.generate
+          end
         end
         children << new_child unless new_child.nil?
       end
       children.flatten
+    end
+  end
+
+  class Group < Combinator
+    def initialize(context, *sequence)
+      super context
+      @seq = sequence.flatten
+    end
+
+    def generate
+      @seq.select do |e|
+        if e.respond_to? :generate?
+          e.generate?
+        else
+          true
+        end
+      end.map do |e|
+        if e.respond_to? :generate
+          [e.generate, e.include?]
+        else
+          e = context.get e
+          [e&.generate || e, if e.nil? then true else e.include? end]
+        end
+      end.select do |t|
+        t[1]
+      end.map do |t|
+        t[0]
+      end
     end
   end
 
@@ -143,7 +201,7 @@ module Cobaya::Combinators
   end
   
   def any(*symbols)
-    Cobaya::Combinators::Any.new @context, symbols
+    Cobaya::Combinators::Any.new @context, *symbols
   end    
   
   def whatever
@@ -166,5 +224,9 @@ module Cobaya::Combinators
   # :reek:BooleanParameter
   def action(returns = false, &block)
     Cobaya::Combinators::Action.new @context, returns, &block
+  end
+
+  def group(*sequence)
+    Cobaya::Combinators::Group.new @context, sequence
   end
 end

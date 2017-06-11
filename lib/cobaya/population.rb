@@ -2,12 +2,13 @@ module Cobaya
   class Population
     attr_reader :individuals, :size, :generation
     
-    def initialize(pop_size = 100)
+    def initialize(directory, pop_size = 100)
       @already_populated = false
       @generator = Cobaya::Generators::Ruby19.new
       @size = pop_size
       @individuals = []
       @generation = 0
+      @directory = directory
     end
 
     def populate
@@ -21,16 +22,39 @@ module Cobaya
       @individuals.each do |indv|
         indv.evaluate
       end
-      
+
       @individuals.map! do |indv|
         indv.mutate
       end
       @generation += 1
     end
+
+    def save
+      save_dir = File.join @directory, @generation.to_s
+      Dir.mkdir save_dir unless Dir.exist? save_dir
+      @individuals.each_index do |i|
+        indv_save_file = File.join save_dir, "#{i}.rb"
+        file = File.open indv_save_file, 'w'
+        @individuals[i].write_to_io file
+        file.close
+      end
+    end
     
     def reset
+      @individuals = []
       @size.times {
-        @individuals << Individual.new(@generator.generate)
+        tree = nil
+        while tree == nil
+          begin
+            tree = @generator.generate
+          #rescue Exception => e
+#            View.instance.err "Generation failed. Retrying..."
+#            puts e
+#            puts e.backtrace
+#            tree = nil
+          end
+        end
+        @individuals << Individual.new(tree)
       }
       @generation = 0
     end
