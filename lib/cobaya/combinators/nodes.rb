@@ -8,14 +8,20 @@ module Cobaya::Combinators
   class Terminal < Combinator
     include Cobaya::SexpHelper
     
-    def initialize(context, name, generator)
+    def initialize(context, name, generator, override: nil)
       super context
       @name = name
       @generator = generator
+      @override = override
     end
     
     def generate
-      s @name, @generator.generate
+      if @override.nil?
+        name = @name
+      else
+        name = @override
+      end
+      s name, @generator.generate
     end
   end
 
@@ -25,13 +31,18 @@ module Cobaya::Combinators
   class Literal < Combinator
     include Cobaya::SexpHelper
     
-    def initialize(context, name)
+    def initialize(context, name, override: nil)
       super context
       @name = name
+      @override = override
     end
     
     def generate
-      s @name
+      if @override.nil?
+        s @name
+      else
+        s @override
+      end
     end
   end
 
@@ -40,10 +51,11 @@ module Cobaya::Combinators
   class NonTerminal < Combinator
     include Cobaya::SexpHelper
     
-    def initialize(context, name, children)
+    def initialize(context, name, children, override: nil)
       super context
       @name = name
       @children = children
+      @override = override
     end
 
     def generate
@@ -69,20 +81,21 @@ module Cobaya::Combinators
       end.flatten
       context.up
       
-      s @name, children
+      s(if @override.nil? then @name else @override end, children)
     end
   end
   
   
-  def terminal(name, generator = nil)
+  def terminal(name, generator = nil, override: nil)
     @context.terminals[name] = (if generator
-                                Cobaya::Combinators::Terminal.new @context, name, generator
+                                Cobaya::Combinators::Terminal.new @context, name, generator, override: override
                                else
-                                 Cobaya::Combinators::Literal.new @context, name
+                                 Cobaya::Combinators::Literal.new @context, name, override: override
                                 end)
   end
   
-  def non_terminal(name, *children)
-    @context.non_terminals[name] = Cobaya::Combinators::NonTerminal.new @context, name, children
+  def non_terminal(name, *children, override: nil)
+    @context.non_terminals[name] =
+      Cobaya::Combinators::NonTerminal.new @context, name, children, override: override
   end
 end

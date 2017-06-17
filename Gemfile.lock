@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cobaya (0.1.0)
+    cobaya (0.2.0)
       flog (~> 4.6)
       parser (~> 2.3)
       pastel (~> 0.7)

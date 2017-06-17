@@ -67,7 +67,7 @@ module Cobaya
     
     def reset
       @individuals = []
-      @size.times {
+      @size.times { |i|
         tree = nil
         max_retries = 10000
         retries = 0
@@ -76,20 +76,21 @@ module Cobaya
             tree = @generator.generate
             @individuals << Individual.new(tree)
           rescue Exception
-            View.instance.err "Generation failed. Retrying.#{'.'*retries}\r", newline: false
+            View.instance.err "[#{i}] Generation failed. Retrying.#{'.'*retries}\r", newline: false
             #puts e
             #puts e.backtrace
             tree = nil
           end
           retries += 1
         end
+        print " " * (retries + 100), "\r"
         if tree.nil?
           $stderr.puts "Couldn't create a tree after #{max_retries} atempts. Aborting..."
           exit! 2
         end
         
       }
-      View.instance.nl
+      #View.instance.nl
       @generation = 0
     end
     

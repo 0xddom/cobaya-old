@@ -50,7 +50,7 @@ module Cobaya::Generators
     def generate
       #raise "No class variables to choose from!" if context.empty?
       return nil if context.empty?
-      "@@#{context.sample}".to_sym
+      context.sample
     end
   end
 

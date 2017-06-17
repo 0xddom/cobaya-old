@@ -102,18 +102,30 @@ module Cobaya::Generators
       non_terminal :erange, :int, :int
       non_terminal :const, nilable(any :cbase, any_var), const(constants)
       non_terminal :defined?, :lvar
-      non_terminal :lvasgn, lvar(locals), nilable_expr
-      non_terminal :ivasgn, ivar(instance_vars), nilable_expr
-      non_terminal :cvasgn, cvar(class_vars), nilable_expr
-      non_terminal :gvasgn, gvar(globals), nilable_expr
+      non_terminal :lvasgn, lvar(locals), expr
+      non_terminal :ivasgn, ivar(instance_vars), expr
+      non_terminal :cvasgn, cvar(class_vars), expr
+      non_terminal :gvasgn, gvar(globals), expr
+      
+      non_terminal :e_lvasgn, lvar(locals), override: :lvasgn
+      non_terminal :e_ivasgn, ivar(instance_vars), override: :ivasgn
+      non_terminal :e_cvasgn, cvar(class_vars), override: :cvasgn
+      non_terminal :e_gvasgn, gvar(globals), override: :gvasgn
+      incomplete_asgn = any :e_lvasgn, :e_ivasgn, :e_cvasgn, :e_gvasgn
+      terminal :e_lvar, lvar_g(locals), override: :lvasgn
+      terminal :e_ivar, ivar_g(instance_vars, max_var_len), override: :ivasgn
+      terminal :e_cvar, cvar_g(class_vars), override: :cvasgn
+      terminal :e_gvar, gvar_g(globals, max_var_len), override: :gvasgn
+      mlhs_piece = any :e_lvar, :e_ivar, :e_cvar, :e_gvar
+      
       non_terminal :casgn, nilable(any :cbase, :lvar), const(constants), nilable_expr
       non_terminal :send, nilable(any_var), :sym, multiple_exprs, optional(:block_pass)
       #non_terminal :csend
-      non_terminal :mlhs, multiple(any_asgn)    #any(:mlhs, multiple(any_asgn))
+      non_terminal :mlhs, multiple(mlhs_piece)    #any(:mlhs, multiple(any_asgn))
       non_terminal :masgn, :mlhs, :array
-      non_terminal :op_asgn, any_asgn, any(:+, :-, :*, :/), expr
-      non_terminal :or_asgn, any_asgn, expr
-      non_terminal :and_asgn, any_asgn, expr
+      non_terminal :op_asgn, incomplete_asgn, any(:+, :-, :*, :/), expr
+      non_terminal :or_asgn, incomplete_asgn, expr
+      non_terminal :and_asgn, incomplete_asgn, expr
       non_terminal :class, (action do |_|
                               instance_vars.push
                               locals.push
