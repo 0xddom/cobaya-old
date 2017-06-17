@@ -1,4 +1,39 @@
 module Cobaya
+  class ProcessName
+    include Singleton
+    
+    def initialize
+      @status = 'Idle'
+      @generation = 0
+      @changed = true
+    end
+
+    def status=(status)
+      @status = status
+      @changed = true
+    end
+
+    def generation=(generation)
+      unless @generation == generation
+        @generation = generation
+        @changed = true
+      end
+    end
+      
+    
+    def update
+      if @changed
+        @changed = false
+        $0 = gen_name
+      end
+    end
+
+    private
+    def gen_name
+      "cobaya: #{@status} (gen #{@generation})"
+    end
+  end
+  
   class View
     include Singleton
 
@@ -12,13 +47,14 @@ module Cobaya
       @info = '[' + @pastel.yellow('!') + ']'
       @ok = '[' + @pastel.green('+') + ']'
 
-
+      @process = Cobaya::ProcessName.instance
       status "Fuzzing" # Default value
     end
 
     def status(new_status, success = true)
       #@spinner.send(if success then :success else :error end, '')
       @spinner.update title: new_status
+      @process.status = new_status
     end
 
     def banner
@@ -54,6 +90,8 @@ module Cobaya
     end
     
     def step(n)
+      @process.generation = n
+      @process.update
       @spinner.spin
       print " (Generation #{n})"
       self

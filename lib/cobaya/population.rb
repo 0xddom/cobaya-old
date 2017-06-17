@@ -99,8 +99,10 @@ module Cobaya
 
     private
     def parsimory_pressure(avg_len, avg_fitness)
-      n = @individuals.length
-      (covariance_f_l(avg_fitness, avg_len) / (n-1)) * ((n-1) / variance_l(avg_len))
+      n = @individuals.length - 1
+      n = 1 if n <= 0 
+      (covariance_f_l(avg_fitness, avg_len) / (n)) *
+        ((n) / variance_l(avg_len))
     end
 
     ##

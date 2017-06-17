@@ -3,7 +3,11 @@ require 'cobaya'
 
 trap("SIGINT") { exit! }
 
+Cobaya::ProcessName.instance.update
+
 module Cobaya
+  
+  
   class CLI < Thor
     include Thor::Actions
 
