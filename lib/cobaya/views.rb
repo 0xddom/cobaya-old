@@ -1,8 +1,9 @@
 module Cobaya
   class View
     include Singleton
+
     def initialize
-      @spinner = TTY::Spinner.new '[:spinner] Fuzzing...', format: :classic
+      @spinner = TTY::Spinner.new '[:spinner] :title...', format: :classic
       @pastel = Pastel.new
       @err = @pastel.bold '[', @pastel.red('-'), ']'
       @banner = @pastel.bold ('[' + @pastel.green('+') +
@@ -10,6 +11,14 @@ module Cobaya
                               Cobaya::VERSION)
       @info = '[' + @pastel.yellow('!') + ']'
       @ok = '[' + @pastel.green('+') + ']'
+
+
+      status "Fuzzing" # Default value
+    end
+
+    def status(new_status, success = true)
+      #@spinner.send(if success then :success else :error end, '')
+      @spinner.update title: new_status
     end
 
     def banner
@@ -27,13 +36,15 @@ module Cobaya
       self
     end
 
-    def ok(*msg)
-      puts "#{@ok} #{msg.join ' '}"
+    def ok(*msg, newline: true)
+      print "#{@ok} #{msg.join ' '}"
+      nl if newline
       self
     end
 
-    def err(*msg)
-      puts "#{@err} #{msg.join ' '}"
+    def err(*msg, newline: true)
+      print "#{@err} #{msg.join ' '}"
+      nl if newline
       self
     end
 

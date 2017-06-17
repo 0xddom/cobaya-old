@@ -9,16 +9,24 @@ module Cobaya
     end
 
     def total(length)
-      (@structure_score + @feedback_score) - @pressure * length
+      (@structure + @feedback) - @pressure * length
     end
   end
-  
+
   class Fitness
+    ExitedMod   = 1.2
+    SignaledMod = 2
+    CoredumpMod = 1.05
+
+    attr_reader :length
+    attr_reader :normalized
+    
     def initialize(tree)
       @scores = Scores.new
       
       @tree = tree
       @length = calculate_length
+      
       
       options = {
         parser: Ruby19Parser,
@@ -45,9 +53,34 @@ module Cobaya
     end
 
     def feedback(cov, crash)
+      if cov.nil?
+        cov_score = 0
+      else
+        cov_score = Coverage.instance.add cov
+      end
+      crash_score = get_crash_modifiers crash
+      @scores.feedback = cov_score * crash_score      
+    end
+
+    def normalize(max)
+      @normalized = score / max
     end
 
     private
+    def get_crash_modifiers(crash)
+      if crash.nil?
+        1
+      else
+        mods = 1
+
+        mods *= ExitedMod if crash.exited?
+        mods *= SignaledMod if crash.signaled?
+        mods *= CoredumpMod if crash.coredump?
+        
+        mods
+      end
+    end
+    
     def calculate_length
       @tree.leaf_count * @tree.depth / 2 # Somewat related to the area of the triangle
     end

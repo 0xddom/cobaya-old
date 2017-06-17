@@ -6,12 +6,12 @@ module Cobaya::Mutators
     end
 
     def mutate
-      mutate_tree @tree, 0.9
+      mutate_tree @tree, 0.2
     end
 
     private
     def mutate_tree(tree, prob)
-      return tree unless tree.class.name == "Parser::AST:Node"
+      return tree unless tree.class.name == "Parser::AST::Node"
       if (rand < prob) || (tree.leaf? and rand < prob)
         @generator.generate tree.type
       else

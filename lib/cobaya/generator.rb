@@ -43,12 +43,22 @@ module Cobaya
     def random_non_terminal
       @non_terminals.keys.sample
     end
+
+    def terminal?(sym)
+      @terminals.include? sym
+    end
+
+    def non_terminal?(sym)
+      @non_terminals.include? sym
+    end
   end
   
   class BaseGenerator
     include Cobaya::Generators
     include Cobaya::Combinators
 
+    attr_reader :context
+    
     def initialize
       @context = Cobaya::GeneratorContext.new
       @whatever = Cobaya::Combinators::Whatever.new @context

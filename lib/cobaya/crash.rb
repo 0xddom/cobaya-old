@@ -2,7 +2,7 @@ module Cobaya
   class Crash
     attr_reader :status, :path
     attr_accessor :stdout, :stderr, :stdin
-    
+
     def initialize(status)
       @status = status
     end
@@ -27,6 +27,18 @@ module Cobaya
         sb += "(coredumped)"
       end
       sb
+    end
+
+    def exited?
+      @status.exited?
+    end
+
+    def signaled?
+      @status.signaled?
+    end
+
+    def coredump?
+      @status.coredump?
     end
     
   end

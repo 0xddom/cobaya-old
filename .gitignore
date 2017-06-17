@@ -5,3 +5,4 @@ tmp
 doc
 population
 *.sancov
+cov

@@ -31,10 +31,12 @@ module Cobaya
     desc 'gpfuzz [options] TARGET', 'Starts a fuzzing session using GP'
     option :crashes, aliases: :c
     option :population, aliases: :p
+    option :size, aliases: :s
     def gpfuzz(target)
       crashes = options[:crashes] || './crashes'
       population = options[:population] || './population'
-      fuzzer = GPFuzzer.new target, crashes, population
+      size = options[:size]&.to_i || 100
+      fuzzer = GPFuzzer.new target, crashes, population, size
       
       fuzzer.run
     end

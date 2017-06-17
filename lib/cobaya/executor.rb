@@ -7,7 +7,7 @@ module Cobaya
       @signal = 9 # KILL
       @crashes_dir = crashes
       @env = {
-        'ASAN_OPTIONS' => 'coverage=1'
+        'ASAN_OPTIONS' => 'coverage=1:coverage_dir=./cov'
       }
 
       set_output_files
@@ -23,7 +23,8 @@ module Cobaya
         Process.kill @signal, pid
       end
       Process.waitpid pid
-      process_status $?
+      
+      [get_cov(pid), process_status($?)]
     end
 
     private
@@ -37,6 +38,43 @@ module Cobaya
 
         crash
       end
+    end
+
+    def get_cov(pid)
+      cov_filename = File.join File.absolute_path('cov'), cov_filename(pid)
+      return nil unless File.exist? cov_filename
+      cov = File.open cov_filename, 'rb'
+      magic = cov.read 8
+      # Return nil if magic number validation fails
+      unless valid? magic
+        puts "Failed #{p magic}"
+        return nil
+      end
+      offsiz = if magic[0] == 'd' then 8 else 4 end
+      get_addresses cov, offsiz
+    end
+
+    def valid?(magic)
+      #(magic.to_s == "d\xFF\xFF\xFF\xFF\xFF\xBF\xC0") or (magic.to_s == " \xFF\xFF\xFF\xFF\xFF\xBF\xC0") # Fuck this shit
+      true
+    end
+    
+    def get_addresses(cov, offsiz)
+      addresses = []
+      if offsiz == 8
+        format = 'I<'
+      else
+        format = 'L<'
+      end
+
+      while address = cov.read(offsiz)
+        addresses << address.unpack(format)
+      end
+      addresses.flatten
+    end
+    
+    def cov_filename(pid)
+      "#{File.basename @target}.#{pid}.sancov"
     end
 
     def run_target

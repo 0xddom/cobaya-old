@@ -27,6 +27,9 @@ module Cobaya
 
   require 'cobaya/mutators/generative'
   
+  require 'cobaya/coverage'
+  require 'cobaya/crossover'
+  require 'cobaya/pool'
   require 'cobaya/random'
   require 'cobaya/views'
   require 'cobaya/population'

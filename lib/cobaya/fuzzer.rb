@@ -31,10 +31,10 @@ module Cobaya
         @current_sample_file.close
 
         executor = StdinExecutor.new @current_sample_file.path, @target, @crashes
-        result = executor.execute
+        _, result = executor.execute
 
         if result
-          @view.log_crash result
+          @view.nl.log_crash result
         else
           @view.step
         end

@@ -1,10 +1,10 @@
 module Cobaya
   class GPFuzzer
-    def initialize(target, crashes, population)
+    def initialize(target, crashes, population, size)
       @view = View.instance
       @target = target
       @crashes = crashes
-      @population = Population.new population
+      @population = Population.new population, size
     end
 
     def run
@@ -13,7 +13,9 @@ module Cobaya
       @view.ok 'Fuzzer ready'
       loop do
         @population.save
+        @view.status 'Fuzzing'
         @population.individuals.each do |indv|
+          
           fitness = indv.fitness
           
           output_file = File.open "/tmp/sample_file_#{Time.now.to_i}_#{rand(Time.now.to_i).to_i}.rb", 'w'
@@ -21,17 +23,19 @@ module Cobaya
           output_file.close
 
           executor = StdinExecutor.new output_file.path, @target, @crashes
-          result = executor.execute
+          cov, result = executor.execute
 
           if result
-            @view.log_crash result
+            #@view.nl.log_crash result
           else
             @view.step @population.generation
           end
 
-          fitness.feedback nil, result
+          fitness.feedback cov, result
         end
+        @view.nl
         @population.breed
+        @view.nl
       end
     end
 

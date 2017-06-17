@@ -135,7 +135,7 @@ module Cobaya::Generators
                                                                                    locals.pop
                                                                                  end)
       non_terminal :undef, multiple_syms
-      non_terminal :alias, :sym, multiple_syms
+      _non_terminal :alias, :sym, multiple_syms
       non_terminal :args, multiple(:arg), multiple(:optarg), optional(:restarg), optional(:kwarg), optional(:blockarg)
       non_terminal :optarg, lvar(locals), whatever
       non_terminal :kwoptarg, lvar(locals), whatever
