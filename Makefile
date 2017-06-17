@@ -14,5 +14,11 @@ clean:
 	rm -rf population/*
 	rm -rf crashes/*
 
+gem: clean-gem
+	gem build cobaya.gemspec
+
+clean-gem:
+	rm -f *.gem
+
 fuzz:
 	$(BE) cobaya gpfuzz -s 10000 ../cobaya-runs/mruby/bin/mruby

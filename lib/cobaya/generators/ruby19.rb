@@ -26,15 +26,32 @@ module Cobaya::Generators
       constants = Cobaya::VariablesStack.new :constants
 
       # Temporal variables to avoid duplication
-      multiple_whatever = multiple whatever
-      optional_multiple_whatever = optional multiple_whatever
+      #multiple_whatever = multiple whatever
+      #optional_multiple_whatever = optional multiple_whatever
       str_g = str max_str_len
       sym_g = sym max_str_len
-      nilable_whatever = nilable whatever
+      #nilable_whatever = nilable whatever
       any_asgn = any :send, :lvasgn, :gvasgn, :cvasgn, :ivasgn
       any_var = any :lvar, :cvar, :gvar, :ivar
       multiple_syms = multiple :sym, :dsym
 
+      expr = any :true, :false, :nil, :int, :float, :str,
+                 :sym, :self, :lvar, :ivar, :cvar, :gvar,
+                 :nth_ref, :zsuper, :dstr, :dsym, :regexp,
+                 :array, :hash, :irange, :erange, :const,
+                 :defined?, :lvasgn, :ivasgn, :cvasgn,
+                 :gvasgn, :casgn, :send, :masgn, :op_asgn,
+                 :or_asgn, :and_asgn, :class, :module,
+                 :sclass, :def, :defs, :super, :yield,
+                 :block, :and, :or, :if, :case, :begin,
+                 :while, :until, :while_post, :until_post,
+                 :for, :return, :iflipflop, :eflipflop,
+                 :match_current_line, :mathc_with_lvasgn
+
+      multiple_exprs = multiple expr
+      optional_exprs = optional multiple_exprs
+      nilable_expr = nilable expr
+                 
       def _terminal(*); end
       def _non_terminal(*); end
       
@@ -49,7 +66,7 @@ module Cobaya::Generators
       terminal :str, str_g
       #terminal :string, str_g # Unparser fails with this one
       terminal :sym, sym_g
-      terminal :regopt, multiple(:i, :m, :x, :o).force!
+      terminal :regopt, multiple(:i, :m, :x).force!
       terminal :self
       terminal :lvar, lvar_g(locals)
       terminal :ivar, ivar_g(instance_vars, max_var_len)
@@ -73,35 +90,35 @@ module Cobaya::Generators
       #       Crear un método para guardar literales y hacer que se compruebe primero el literal y luego ya se busque por terminales o no terminales
       
       # Non terminals
-      non_terminal :dstr, multiple_whatever
-      non_terminal :dsym, multiple_whatever
-      _non_terminal :xstr, multiple_whatever # Better not execute other things while fuzzing
-      non_terminal :regexp, multiple_whatever, :regopt
-      non_terminal :array, multiple_whatever
+      non_terminal :dstr, multiple_exprs
+      non_terminal :dsym, multiple_exprs
+      _non_terminal :xstr, multiple_exprs # Better not execute other things while fuzzing
+      non_terminal :regexp, multiple_exprs, :regopt
+      non_terminal :array, multiple_exprs
       non_terminal :splat, :lvar
-      non_terminal :pair, :sym, whatever
+      non_terminal :pair, :sym, expr
       non_terminal :hash, multiple(:pair)
       non_terminal :irange, :int, :int
       non_terminal :erange, :int, :int
       non_terminal :const, nilable(any :cbase, any_var), const(constants)
       non_terminal :defined?, :lvar
-      non_terminal :lvasgn, lvar(locals), nilable_whatever
-      non_terminal :ivasgn, ivar(instance_vars), nilable_whatever
-      non_terminal :cvasgn, cvar(class_vars), nilable_whatever
-      non_terminal :gvasgn, gvar(globals), nilable_whatever
-      non_terminal :casgn, nilable(any :cbase, :lvar), const(constants), nilable_whatever
-      non_terminal :send, nilable(any_var), :sym, multiple_whatever, optional(:block_pass)
+      non_terminal :lvasgn, lvar(locals), nilable_expr
+      non_terminal :ivasgn, ivar(instance_vars), nilable_expr
+      non_terminal :cvasgn, cvar(class_vars), nilable_expr
+      non_terminal :gvasgn, gvar(globals), nilable_expr
+      non_terminal :casgn, nilable(any :cbase, :lvar), const(constants), nilable_expr
+      non_terminal :send, nilable(any_var), :sym, multiple_exprs, optional(:block_pass)
       #non_terminal :csend
       non_terminal :mlhs, multiple(any_asgn)    #any(:mlhs, multiple(any_asgn))
       non_terminal :masgn, :mlhs, :array
-      non_terminal :op_asgn, any_asgn, any(:+, :-, :*, :/), whatever
-      non_terminal :or_asgn, any_asgn, whatever
-      non_terminal :and_asgn, any_asgn, whatever
+      non_terminal :op_asgn, any_asgn, any(:+, :-, :*, :/), expr
+      non_terminal :or_asgn, any_asgn, expr
+      non_terminal :and_asgn, any_asgn, expr
       non_terminal :class, (action do |_|
                               instance_vars.push
                               locals.push
                               class_vars.push
-                            end), :const, nilable(:const), whatever, (action do |_|
+                            end), :const, nilable(:const), expr, (action do |_|
                                                                         instance_vars.pop
                                                                         locals.pop
                                                                         class_vars.pop
@@ -110,7 +127,7 @@ module Cobaya::Generators
                                instance_vars.push
                                locals.push
                                class_vars.push
-                             end), :const, whatever, (action do |_|
+                             end), :const, expr, (action do |_|
                                                         instance_vars.pop
                                                         locals.pop
                                                         class_vars.pop
@@ -126,51 +143,51 @@ module Cobaya::Generators
                                                      end)
       non_terminal :def, lvar(locals), (action do |_|
                             locals.push
-                          end), :args, nilable_whatever, (action do |_|
+                          end), :args, nilable_expr, (action do |_|
                                                             locals.pop
                                                           end)
       non_terminal :defs, :self, lvar(locals), (action do |_|
                                                    locals.push
-                                                 end), :args, nilable_whatever, (action do |_|
+                                                 end), :args, nilable_expr, (action do |_|
                                                                                    locals.pop
                                                                                  end)
-      non_terminal :undef, multiple_syms
+      _non_terminal :undef, multiple_syms
       _non_terminal :alias, :sym, multiple_syms
       non_terminal :args, multiple(:arg), multiple(:optarg), optional(:restarg), optional(:kwarg), optional(:blockarg)
-      non_terminal :optarg, lvar(locals), whatever
-      non_terminal :kwoptarg, lvar(locals), whatever
+      non_terminal :optarg, lvar(locals), expr
+      non_terminal :kwoptarg, lvar(locals), expr
       #non_terminal :arg_expr
       #non_terminal :restarg_expr
       #non_terminal :blockarg_expr
-      non_terminal :super, optional_multiple_whatever
-      non_terminal :yield, optional_multiple_whatever
+      non_terminal :super, optional_exprs
+      non_terminal :yield, optional_exprs
       non_terminal :block, :send, (action do |_|
                                      locals.push
                                    end), :args, :begin, (action do |_|
                                                            locals.pop
                                                          end)
       non_terminal :block_pass, :lvar
-      non_terminal :and, whatever, whatever
-      non_terminal :or, whatever, whatever
-      _non_terminal :not, whatever
-      non_terminal :if, whatever, nilable_whatever, nilable_whatever
-      non_terminal :when, multiple_whatever
-      non_terminal :case, whatever, multiple(:when), whatever
-      non_terminal :begin, optional(group multiple any_asgn, multiple_whatever) #optional_multiple_whatever
-      non_terminal :while, whatever, whatever
-      non_terminal :until, whatever, whatever
-      non_terminal :while_post, whatever, whatever
-      non_terminal :until_post, whatever, whatever
-      non_terminal :for, :lvasgn, whatever, whatever
-      non_terminal :break, whatever
-      non_terminal :next, whatever
-      non_terminal :redo, whatever
-      non_terminal :return, whatever
-      non_terminal :resbody, :array, :lvasgn, whatever
-      non_terminal :rescue, whatever, multiple(:resbody), nilable_whatever
-      non_terminal :ensure, whatever, whatever
-      non_terminal :preexe, whatever
-      non_terminal :postexe, whatever
+      non_terminal :and, expr, expr
+      non_terminal :or, expr, expr
+      _non_terminal :not, expr
+      non_terminal :if, expr, nilable_expr, nilable_expr
+      non_terminal :when, multiple_exprs
+      non_terminal :case, expr, multiple(:when), expr
+      non_terminal :begin, any(:rescue, optional(group multiple any_asgn, multiple_exprs)) #optional_multiple_whatever
+      non_terminal :while, expr, any(expr, :break, :next, :redo)
+      non_terminal :until, expr, any(expr, :break, :next, :redo)
+      non_terminal :while_post, expr, any(expr, :break, :next, :redo)
+      non_terminal :until_post, expr, any(expr, :break, :next, :redo)
+      non_terminal :for, :lvasgn, expr, any(expr, :break, :next, :redo)
+      non_terminal :break, expr
+      non_terminal :next, expr
+      non_terminal :redo, expr
+      non_terminal :return, expr
+      non_terminal :resbody, :array, :lvasgn, expr
+      non_terminal :rescue, expr, multiple(:resbody), nilable_expr
+      non_terminal :ensure, expr, expr
+      _non_terminal :preexe, expr
+      _non_terminal :postexe, expr
       non_terminal :iflipflop, any_var, any_var
       non_terminal :eflipflop, any_var, any_var
       non_terminal :match_current_line, :regexp
