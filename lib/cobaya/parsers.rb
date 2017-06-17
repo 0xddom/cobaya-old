@@ -60,3 +60,4 @@ module Parser::AST
   end
 end
 
+Cobaya::AST = Parser::AST
