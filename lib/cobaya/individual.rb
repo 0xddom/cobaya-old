@@ -44,15 +44,23 @@ module Cobaya
     end
 
     private
-    def trim_tree(tree, context, generator)
+    def trim_tree(tree, context, generator, retries = 0)
+      if retries >= 10_000
+        $stderr.puts "Couldn't trim the sample after 10000 retries. Aborting..."
+        exit! 2
+      end
       return tree unless tree.class.name == "Parser::AST::Node"
       if context.max_depth_reached? and context.non_terminal? tree.type
-        generator.generate context.terminals.keys.sample
+        begin
+          generator.generate context.terminals.keys.sample
+        rescue Exception
+          trim_tree tree, context, generator, retries + 1
+        end
       else
         context.down
         copy = tree.children.dup
         copy.map! do |child|
-          trim_tree child, context, generator
+          trim_tree child, context, generator, retries
         end
         context.up
 
