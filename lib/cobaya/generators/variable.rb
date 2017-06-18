@@ -75,7 +75,7 @@ module Cobaya::Generators
     end
 
     def generate
-      "$#{NumGen.new(@max, false).generate}".to_sym
+      "#{NumGen.new(@max, false).generate}".to_sym
     end
   end
 
