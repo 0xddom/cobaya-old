@@ -21,4 +21,4 @@ clean-gem:
 	rm -f *.gem
 
 fuzz:
-	$(BE) cobaya gpfuzz -s 10000 ../cobaya-runs/mruby/bin/mruby
+	$(BE) cobaya gpfuzz -s 10 ../cobaya-runs/mruby/bin/mruby

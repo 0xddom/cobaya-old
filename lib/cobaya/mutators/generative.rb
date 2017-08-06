@@ -9,6 +9,13 @@ module Cobaya::Mutators
       mutate_tree @tree, 0.2
     end
 
+    def self.from_file(file, language)
+      parser = Cobaya::Parsers.get language
+      tree = parser.parse File.read file
+      
+      Generative.new tree
+    end
+    
     private
     def mutate_tree(tree, prob)
       return tree unless tree.class.name == "Parser::AST::Node"

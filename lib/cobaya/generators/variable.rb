@@ -1,5 +1,5 @@
 module Cobaya::Generators
-  class VarGen
+  class VarGen < Cobaya::Combinators::Combinator
     attr_reader :context
     
     def initialize(context)

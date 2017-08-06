@@ -24,6 +24,13 @@ module Cobaya
       trim_tree tree, ruby19.context, ruby19
     end
 
+    def self.from_file(file, language = :ruby19)
+      parser = Cobaya::Parsers.get language
+      tree = parser.parse File.read file
+      
+      Individual.new tree
+    end
+    
     ##
     # Returns a new individual with a mutated tree
     def mutate(retries = 0)

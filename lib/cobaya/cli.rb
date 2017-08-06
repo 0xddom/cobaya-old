@@ -48,19 +48,28 @@ module Cobaya
     desc 'mutate [options] FILE', 'Mutate a sample in a determinist way'
     option :seed, aliases: :s
     option :output, aliases: :o
-    option :fragments, required: true, aliases: :f
+    #option :fragments, required: true, aliases: :f
     option :lang, aliases: :l
     def mutate(file)
       seed = options[:seed].to_i || Time.now.to_i
       lang = options[:lang] || Parsers.default
       output = open_stream(options[:output] || '-')
-      collection = FragmentsCollection.instance
-      collection.init options[:fragments], lang
+      #collection = FragmentsCollection.instance
+      #collection.init options[:fragments], lang
 
       SRandom.instance.init seed
       
-      mutation = Mutation.from_file file, lang.to_sym
+      mutation = Cobaya::Mutators::Generative.from_file file, lang.to_sym
       output.puts Unparser.unparse mutation.mutate
+    end
+
+    desc 'crossover [options] PARENT1 PARENT2', 'Crossover two parents to produce new code'
+    def crossover(p1_file, p2_file)
+      p1 = Individual.from_file p1_file
+      p2 = Individual.from_file p2_file
+
+      ch = p1.breed p2
+      ch.write_to_io STDOUT
     end
 
     desc 'execute [options] FILE TARGET', 'Execute the sample against the target'

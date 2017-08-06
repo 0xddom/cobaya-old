@@ -6,3 +6,4 @@ doc
 population
 *.sancov
 cov
+crashes_uniq
