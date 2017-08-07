@@ -42,4 +42,5 @@ module Cobaya
   require 'cobaya/gp_fuzzer'
   require 'cobaya/mutation'
   require 'cobaya/executor'
+  require 'cobaya/context'
 end

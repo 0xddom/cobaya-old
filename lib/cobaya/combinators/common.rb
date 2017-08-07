@@ -166,7 +166,7 @@ module Cobaya::Combinators
           [e.generate, e.include?]
         else
           e = context.get e
-          [e&.generate || e, if e.nil? then true else e.include? end]
+          #[e&.generate || e if e.nil? then true else e.include? end]
         end
       end.select do |t|
         t[1]

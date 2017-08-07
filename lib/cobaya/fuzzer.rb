@@ -7,13 +7,13 @@ end
 
 module Cobaya
   class Fuzzer
-    def initialize(target, crashes, inputs, lang)
+    def initialize(ctx)
       @view = View.instance
       @collection = FragmentsCollection.instance
-      @target = target
-      @crashes = crashes
-      @lang = lang
-      @inputs = inputs
+      @target = ctx.target
+      @crashes = ctx.crashes
+      @lang = ctx.lang
+      @inputs = ctx.population.path
     end
 
 
