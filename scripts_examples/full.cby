@@ -1,0 +1,156 @@
+#!/usr/bin/env bundle exec ruby
+# -*- mode: ruby -*-
+
+# A full example of a cobaya script
+# This script showcases the basic features of the DSL
+# Is NOT functional because it uses incompatible features
+
+# The language is created on top of ruby. So all ruby features are available
+
+# You can run this file as a normal ruby script with the ruby interpreter.
+# Also you can pass the script to the `cobaya-script` binary.
+# If that's the case, there's no need to require the library.
+# Any other library that you may need must be required
+
+# `cobaya-script` will either receive the script as a parameter or by standar input
+# The rest of the parameters are available is the globals like they are normally.
+# If the script was given as a paramenter, the script name is removed from the parameters.
+
+require 'cobaya/script'
+
+# There's a set of functions included to increase the expressiveness of the fuzzer
+# The first ones are replacements for true and false.
+p yes == true
+p no == false
+
+# This block defines a fuzzer
+# Inside a fuzzer you can have multiple targets. Each input will be sent to
+# each target.
+# You can give the fuzzer a name. The paramenter should respond to `to_s`
+fuzzer! {
+  # Set the language target
+  # This paramenter is required and there's no default value
+  lang :mruby
+
+  # Set the target location
+  # If a path is given, it's used as an executable.
+  target('./mruby/bin/mruby') {
+    timeout 10 # Sets the timeout in seconds before the program is forcefully stoped. Default value is 3 seconds.
+    asan yes # Tells the executor to try to parse ASAN outputs. On by default
+    spawn yes # Tells the executor to use the posix_spawn API if possible. On by default
+    cov no # Tells the executor to not collect CoverageSanitizer information of the execution. On by default
+  }
+
+  # Other planned posible target options are:
+  target('./target --option {}') # This will create a temporary file and replace the {} with the path of the file
+  target('./target --option') # This will pass the input by stdin.
+  # Basically, the system searchs for {} and if it's not found, it uses stdin.
+  target('tcp://ip:port') # This will send the input with a socket. UDP can be used too
+  target(ExecutorClass) # This will use the class to create an instance of the custom executor.
+  # The executor must have a #exec method that accepts input and yields a result object
+  target(['./target1', './target2']) { } # If an Array is passed, several and created with the same custom configuration
+  
+
+  # The corpus locations can be specified with the corpus function.
+  # If a path is passed
+  corpus('./corpus_dir') {
+    reload yes # Tells the corpus manager to watch the location for changes
+    main no # Tells the corpus manager that the location must store the new generated samples.
+    # The first location ever specified is the main location by default unless is set to false.
+    # Except for the first location, is off by default.
+  }
+
+  # A redis backend can be specified. This is usefull for sharing the corpus across several machines
+  corpus(:redis) {
+    user 'user' # The redis username
+    password 'password' # The redis password 
+    host 'host' # The redis host
+    port 'port' # The redis port. Defaults to the default redis port
+
+    # The same options as the file system corpus apply (reload, main, ...)
+  }
+  corpus('redis://user:pass@ip:port') # The redis location can be specified with an URL too
+
+  corpus(:memory) # This will use main memory to store the corpus. Defaults to empty
+  corpus(:memory, initial: ['sample1', 'sample2']) # You can also pass an array as the initial corpus
+
+  # A custom corpus manager can be passed. The class must respond to `sample` and `<<(elem)`
+  corpus(MyCustomCorpus)
+
+  # The number of workers can be specified with the workers function
+  workers 4
+  # The default value is the number of processors divided by 2
+  # This will create a pool of fuzzer workers and execute samples from the corpus simultaneously.
+
+  # Since cobaya is a genetic fuzzer, the genetic algorithms can be configured in a per fuzzer basis.
+  # Several invocations of this block will throw an exception
+  # The tipe of the evolution is one of the following (continuous, generational, hybrid)
+  # The continuous mode will create a population based on the initial corpus. When an interesting sample in found, it's added to the corpus.
+  # The generational mode is like the tipical genetic algorithm. With a fixed population size.
+  evolution :continuous {
+    mutation {
+      use fragment | literal # Sets a whitelist of mutation algorithms.
+      exclude generator # Sets a blacklist of mutation algorithms.
+      # The functions are mutually excluyent
+    }
+
+    breeding {
+      # The same functions `use` and `exclude` as in the mutation block, but for breeding algorithms.
+    }
+  }
+
+  # cobaya also has source code generation.
+  # The options for source code generation are (stochastic and clp)
+  generation :stochastic {} # This generator will use a random walk over the grammar to generate ruby source code
+  generation :clp {} # This generator will use Constraint Logic Programming to generate ruby source code.
+
+  # The crashes found by the fuzzer will be stored in a crash location. If the location is a string, it will be taken as a path
+  # Several crash locations can be set. All crashes will be stored in all the crash locations.
+  crash('./crashes') {
+    store stdin | stdout | stderr # Sets what to store of the crash. Defaults to only stdin.
+
+    name {|crash| "" } # Allows to modify the name of the crash output file. By default is the sha256 hash of the input.
+    # Will only work in locations that allow naming.
+
+    save? {|crash| } # Allows to configure predicates that tell if the crash should be saved. Several predicates can be set.
+    # The default predicates always returns true.
+    # By default the predicates are folded with the conjunctions.
+    # If the `any_predicate` method is called, the disjunction is used instead
+    any_predicate # Will make the predicates to be P1 || P2 || ... || PN
+  }
+  # Any other location can be used for storing crashes too. To be decided which ones.
+
+  log('./fuzzer.log') {} # This will setup the logging for the fuzzer. By default is stdout.
+  # Several logs can be set. After the first log is configured, the default stdout log is removed.
+
+  # Allows to send logs to a graylog input
+  log(:graylog) {
+    host 'host'
+    port 'port'
+  }
+  log('gelf://conn') # Can be set with an URL too
+
+  # Any class that implements the standard logging interface is allowed to be used in the log function.
+  
+}
+
+# A fuzzer with a name
+fuzzer!('Ruby 2.4 fuzzer') {
+  lang :ruby24
+}
+
+# You can have several fuzzers defined in the script. Each fuzzer will run in a separate process if there is more than one defined.
+# If only one fuzzer was defined, the fuzzer will run in the main thread and no child process will be created.
+
+# `fuzzer!` automatically runs the fuzzer after the definition.
+# The `fuzzer` function returns the fuzzer object.
+# To run the fuzzer you can do
+
+my_fuzzer = fuzzer {
+  # ...
+}
+my_fuzzer.run
+
+# or
+
+fuzzer { }.run

@@ -7,6 +7,8 @@ module Cobaya
   require 'ruby_parser'
   require 'flog'
   require 'pastel'
+  require 'tempfile'
+  require 'childprocess'
   
   require 'cobaya/version'
   require 'cobaya/parsers'
@@ -26,6 +28,12 @@ module Cobaya
   require 'cobaya/generators/ruby19'
 
   require 'cobaya/mutators/generative'
+
+  require 'cobaya/corpus/dir'
+  
+  require 'cobaya/evolution/base'
+  require 'cobaya/evolution/continuous'
+  require 'cobaya/target/executable'
   
   require 'cobaya/coverage'
   require 'cobaya/crossover'
@@ -43,4 +51,7 @@ module Cobaya
   require 'cobaya/mutation'
   require 'cobaya/executor'
   require 'cobaya/context'
+  require 'cobaya/context/error'
+  require 'cobaya/context/builder'
+
 end

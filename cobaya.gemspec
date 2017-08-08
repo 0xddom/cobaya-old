@@ -29,10 +29,12 @@ Gem::Specification.new do |s|
     s.add_runtime_dependency 'tty-spinner', '~> 0.4'
     s.add_runtime_dependency 'pastel', '~> 0.7'
     s.add_runtime_dependency 'flog', '~> 4.6'
+    s.add_runtime_dependency 'childprocess', '~> 0.7'
 
 
     s.add_development_dependency 'rspec', '~> 3'
     s.add_development_dependency 'rdoc', '~> 5.0'
     s.add_development_dependency 'rubycritic', '~> 3.1'
+    s.add_development_dependency 'hanna-nouveau', '~> 1.0'
 
 end

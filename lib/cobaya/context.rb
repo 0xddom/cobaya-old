@@ -1,98 +1,40 @@
 module Cobaya
-
   class FuzzingContext
     attr_reader :lang
     attr_reader :crash_handler
-    attr_reader :target
+    attr_reader :targets
     attr_reader :logger
-    attr_reader :population
+    attr_reader :corpus
     attr_reader :workers
 
-    def initialize(lang, crash_handler, target, logger, population, workers)
+    def initialize(lang, crash_handler, targets, logger, corpus, workers)
       @lang = lang
       @crash_handler = crash_handler
-      @target = target
+      @targets = targets
       @logger = logger
-      @population = population
+      @corpus = corpus
       @workers = workers
     end
   end
 
-  class ContextBuildError < RuntimeError
-    attr_reader :errors
-    
-    def initialize
-      @errors = []
+  class ExecutableTargetContext
+    attr_reader :cmd
+    attr_reader :timeout
+    attr_reader :asan
+    attr_reader :spawn
+    attr_reader :cov
+
+    def initialize(cmd, timeout, asan, spawn, cov, sts)
+      @cmd = cmd
+      @timeout = timeout
+      @asan = asan
+      @spawn = spawn
+      @cov = cov
+      @send_to_stdin = sts
     end
 
-    def any?
-      !@errors.empty?
-    end
-  end
-
-  class FuzzingContextBuilder
-    attr_reader :ctx
-    
-    def initialize
-      @ctx = nil
-      @error = ContextBuildError.new
-
-
-      @population = []
-      @workers = 1
-    end
-
-    def build
-      check_errors
-      @ctx = FuzzingContext.new(@lang,
-                                @crash_handler,
-                                @target,
-                                @logger,
-                                @population,
-                                @workers)
-    end
-
-
-
-    def built?
-      !@ctx.nil?
-    end
-
-    def lang(lang)
-    end
-
-    def crashes(crash_handler, mode)
-    end
-
-    def target(target)
-    end
-
-    def log(logger)
-    end
-
-    def population(population)
-    end
-
-    def evolution(mode)
-    end
-
-    def workers(n)
-
-    end
-
-    def generation(mode)
-    end
-
-    private
-    def check_errors
-      @error.errors << 'The language is missing' if @lang.nil?
-      @error.errors << 'The target is missing' if @target.nil?
-      @error.errors << 'Evolution mode is missing' unless @evol_mode_set
-      @error.errors << 'Generation mode is missing' unless @gen_mode_set
-      @error.errors << 'The number of workers must be greater that 0' if @workers <= 0
-
-      raise @error if @error.any?
+    def send_to_stdin?
+      @send_to_stdin
     end
   end
-  
 end

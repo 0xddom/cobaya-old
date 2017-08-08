@@ -1,4 +1,6 @@
 module Cobaya
+  ##
+  # Deprecated
   class StdinExecutor
     def initialize(file, target, crashes)
       @target = target

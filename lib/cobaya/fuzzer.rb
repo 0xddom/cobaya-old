@@ -8,65 +8,34 @@ end
 module Cobaya
   class Fuzzer
     def initialize(ctx)
-      @view = View.instance
-      @collection = FragmentsCollection.instance
-      @target = ctx.target
-      @crashes = ctx.crashes
-      @lang = ctx.lang
-      @inputs = ctx.population.path
+      @ctx = ctx      
     end
 
-
-    
     def run
-      @view.banner
-
       setup
-
-      @view.ok 'Fuzzer ready'
-      loop do
-        @current_sample_file = File.open '/tmp/cobaya_current_sample.rb', 'w'
-
-        prepare_next_sample
-        @current_sample_file.close
-
-        executor = StdinExecutor.new @current_sample_file.path, @target, @crashes
-        _, result = executor.execute
-
-        if result
-          @view.nl.log_crash result
-        else
-          @view.step
-        end
-        
-
-        @rounds = @rounds + 1
-      end
+      fuzzing_loop
     end
 
     private
-    def prepare_next_sample
-      sample = @inputs[@prng.rand @inputs.length]
-      mutation = Mutation.from_file sample, @lang
-      mutated_sample = mutation.mutate
-      fragment = Fragment.new mutated_sample, @current_sample_file.path
-      fragment.write_to_io @current_sample_file
+    def fuzzing_loop
+      for sample, _ in @ctx.corpus
+        for target in @ctx.targets
+          target.exec sample do |result|
+            # Do something with the result
+          end
+        end
+      end
     end
 
+#    def prepare_next_sample
+#      sample = @inputs[@prng.rand @inputs.length]
+#      mutation = Mutation.from_file sample, @lang
+#      mutated_sample = mutation.mutate
+#      fragment = Fragment.new mutated_sample, @current_sample_file.path
+#      fragment.write_to_io @current_sample_file
+#    end
+
     def setup
-      @view.info "Loading input files from #{@inputs}"
-      @inputs = Dir[File.join @inputs, '**', '*'].keep_if { |file| not File.directory? file }
-
-      raise "No inputs!" if @inputs.length == 0
-      
-      seed = Time.now.to_i
-      @view.info "Using #{seed} as initial seed"
-      SRandom.instance.init seed
-      
-      @prng = SRandom.instance.prng
-
-      @current_sample_file = nil
-      @rounds = 0
     end
   end
 end
