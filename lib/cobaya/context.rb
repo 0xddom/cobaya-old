@@ -1,9 +1,12 @@
 module Cobaya
-  class FuzzingContext
+  class BaseContext
+    attr_accessor :logger
+  end
+  
+  class FuzzingContext < BaseContext
     attr_reader :lang
     attr_reader :crash_handler
     attr_reader :targets
-    attr_reader :logger
     attr_reader :corpus
     attr_reader :workers
 
@@ -17,7 +20,7 @@ module Cobaya
     end
   end
 
-  class ExecutableTargetContext
+  class ExecutableTargetContext < BaseContext
     attr_reader :cmd
     attr_reader :timeout
     attr_reader :asan

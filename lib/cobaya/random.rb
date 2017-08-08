@@ -1,4 +1,6 @@
 module Cobaya
+  ##
+  # Deprecated
   class SRandom
     include Singleton
 

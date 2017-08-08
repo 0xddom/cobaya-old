@@ -1,6 +1,7 @@
 # coding: utf-8
 module Cobaya
   # TODO: Añadir la opcion de enviar por parametro
+  # TODO: ASAN_OPTIONS=coverage=1:coverage_dir=./cov
   class ExecutionResult
     attr_reader :exit_code
     attr_reader :in, :out, :err
@@ -53,7 +54,6 @@ module Cobaya
       rescue ChildProcess::TimeoutError
         process.stop
         forcefully_closed = true
-        puts "Forced"
       end
 
       out.rewind
