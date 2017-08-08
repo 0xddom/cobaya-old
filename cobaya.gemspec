@@ -36,5 +36,6 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'rdoc', '~> 5.0'
     s.add_development_dependency 'rubycritic', '~> 3.1'
     s.add_development_dependency 'hanna-nouveau', '~> 1.0'
+    s.add_development_dependency 'simplecov', '~> 0.14'
 
 end

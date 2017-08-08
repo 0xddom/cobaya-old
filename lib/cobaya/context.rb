@@ -40,4 +40,7 @@ module Cobaya
       @send_to_stdin
     end
   end
+
+  require 'cobaya/context/error'
+  require 'cobaya/context/builder'
 end

@@ -1,4 +1,4 @@
-require 'cobaya'
+require 'spec_helper'
 
 RSpec.describe Cobaya::Fragment do
   def apply_rewrite_test(parser, code)

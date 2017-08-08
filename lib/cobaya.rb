@@ -13,7 +13,7 @@ module Cobaya
   require 'cobaya/version'
   require 'cobaya/parsers'
   require 'cobaya/variables'
-  require 'cobaya/sexp_helper'
+  require 'cobaya/helpers/sexp'
   require 'cobaya/combinator'
   require 'cobaya/combinators/common'
   require 'cobaya/combinators/nodes'
@@ -27,31 +27,18 @@ module Cobaya
 
   require 'cobaya/generators/ruby19'
 
-  require 'cobaya/mutators/generative'
-
   require 'cobaya/corpus/dir'
+  require 'cobaya/fragment'
   
-  require 'cobaya/evolution/base'
-  require 'cobaya/evolution/continuous'
   require 'cobaya/target/executable'
-  
+  require 'cobaya/evolution'
   require 'cobaya/coverage'
-  require 'cobaya/crossover'
-  require 'cobaya/pool'
-  require 'cobaya/random'
   require 'cobaya/views'
   require 'cobaya/population'
   require 'cobaya/crash'
   require 'cobaya/collection'
-  require 'cobaya/fitness'
-  require 'cobaya/fragment'
-  require 'cobaya/individual'
   require 'cobaya/fuzzer'
   require 'cobaya/gp_fuzzer'
-  require 'cobaya/mutation'
-  require 'cobaya/executor'
   require 'cobaya/context'
-  require 'cobaya/context/error'
-  require 'cobaya/context/builder'
 
 end
