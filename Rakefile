@@ -10,6 +10,6 @@ RDoc::Task.new do |rdoc|
 
   rdoc.title = "Cobaya #{version} documentation"
   rdoc.rdoc_files.include 'README*'
-  rodc.rdoc_files.include '*.md'
+  rdoc.rdoc_files.include '*.md'
   rdoc.rdoc_files.include File.join 'lib', '**', '*.rb'
 end
