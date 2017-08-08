@@ -1,4 +1,6 @@
 module Cobaya
+  ##
+  # Deprecated
   class GPFuzzer
     def initialize(target, crashes, population, size)
       @view = View.instance
