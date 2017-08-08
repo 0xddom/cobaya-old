@@ -1,4 +1,6 @@
 module Cobaya
+  ##
+  # Deprecated
   class Population
     attr_reader :individuals, :size, :generation
     

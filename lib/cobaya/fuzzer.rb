@@ -18,10 +18,10 @@ module Cobaya
 
     private
     def fuzzing_loop
-      for sample, _ in @ctx.corpus
+      for sample, fitness in @ctx.corpus
         for target in @ctx.targets
           target.exec sample do |result|
-            # Do something with the result
+            process_result sample, fitness, target, result
           end
         end
       end
@@ -36,6 +36,9 @@ module Cobaya
 #    end
 
     def setup
+    end
+
+    def process_result(sample, fitness, target, result)
     end
   end
 end
