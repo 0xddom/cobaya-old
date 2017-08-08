@@ -7,3 +7,4 @@ population
 *.sancov
 cov
 crashes_uniq
+coverage
