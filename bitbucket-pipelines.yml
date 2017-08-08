@@ -13,7 +13,6 @@ pipelines:
         script:
           - bundle install
           - bundle exec rspec
-          - bundle exec rubycritic lib
           - bundle exec rake rdoc
           - bundle exec gem build cobaya.gemspec
           - curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" \
