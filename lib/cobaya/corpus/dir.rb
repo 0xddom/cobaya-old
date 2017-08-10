@@ -9,6 +9,7 @@ module Cobaya
     # Initalizes a new instance from the location path in the file system
     def initialize(path)
       @path = File.absolute_path path
+      @sha256 = Digest::SHA256
       @individuals = []
       load_individuals
     end
@@ -16,13 +17,18 @@ module Cobaya
     ##
     # Returns a random sample from the corpus
     def sample
-      @individuals.sample
+      File.read @individuals.sample unless @individuals.empty?
     end
 
     ##
     # Adds a new sample to the corpus
     def <<(new_indv)
-      raise 'TODO'
+      filename = File.join path, @sha256.hexdigest(new_indv)
+      File.open(filename, 'w') { |fd|
+        fd.write new_indv
+      }
+     
+      @individuals << filename
     end
     
     private
@@ -30,9 +36,8 @@ module Cobaya
     ##
     # Load the individuals in the list from the files in the location
     def load_individuals
-      @individuals = Dir[File.join @path, '**', '*'].map { |file|
-        Individual.from_file file
-      }
+      @individuals = Dir[File.join @path, '**', '*'].
+                       select { |file| !File.directory? file }
     end
     
   end

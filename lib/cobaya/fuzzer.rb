@@ -6,11 +6,19 @@ class Integer
 end
 
 module Cobaya
+
+  ##
+  # This class handles the fuzzing loop
   class Fuzzer
+
+    ##
+    # Creates a new instance
     def initialize(ctx)
       @ctx = ctx      
     end
 
+    ##
+    # Starts the fuzzing loop
     def run
       setup
       fuzzing_loop
@@ -18,10 +26,11 @@ module Cobaya
 
     private
     def fuzzing_loop
-      for sample, fitness in @ctx.corpus
+      for sample, _ in @ctx.corpus
+        print '.'
         for target in @ctx.targets
           target.exec sample do |result|
-            process_result sample, fitness, target, result
+            process_result sample, target, result
           end
         end
       end
@@ -38,7 +47,7 @@ module Cobaya
     def setup
     end
 
-    def process_result(sample, fitness, target, result)
+    def process_result(sample, target, result)
     end
   end
 end

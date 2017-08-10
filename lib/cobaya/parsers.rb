@@ -41,7 +41,7 @@ module Parser::AST
       else
         sum = 0
         children.each do |child|
-          val = child.is_a? Parser::AST::Node ? child.leaf_count : 1
+          val = child.is_a?(Parser::AST::Node) ? child.leaf_count : 1
           sum += val
         end
         sum
@@ -53,7 +53,7 @@ module Parser::AST
         1
       else
         1 + children.map { |child|
-          child.is_a? Parser::AST::Node ? child.depth : 1
+          child.is_a?(Parser::AST::Node) ? child.depth : 1
         }.max
       end
     end

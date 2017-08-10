@@ -19,10 +19,22 @@ The seed can be especified with the `-s` option. If not specified, 0 is used
 
 ## Development
 
-When hacking on this gem, the REPL `pry` comes in handy. You can load the
-contents of the gem with `pry --gem`.
+### Running the test suite
 
-To test the CLI, run
+To run the test suite run the following commands
 
-    ruby -Ilib bin/cobaya
+    bundle install
+	bundle exec rspec
+	
+### Build the documentation
+
+The rdoc documentation can be built with
+
+    bundle install
+	bundle exec rake rdoc
+	
+The user manual can be build with the following command after installing node.js and npm
+
+    cd manual
+	gitbook build
 

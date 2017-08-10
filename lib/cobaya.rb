@@ -9,7 +9,10 @@ module Cobaya
   require 'pastel'
   require 'tempfile'
   require 'childprocess'
-  
+  require 'digest'
+  require 'json'
+
+  require 'cobaya/file_utils'
   require 'cobaya/version'
   require 'cobaya/parsers'
   require 'cobaya/variables'
@@ -29,7 +32,8 @@ module Cobaya
 
   require 'cobaya/corpus/dir'
   require 'cobaya/fragment'
-  
+
+  require 'cobaya/result'
   require 'cobaya/target/executable'
   require 'cobaya/evolution'
   require 'cobaya/coverage'
