@@ -27,7 +27,12 @@ module Cobaya
     def self.from_file(file, language = :ruby19)
       parser = Cobaya::Parsers.get language
       tree = parser.parse File.read file
-      
+      Individual.new tree
+    end
+
+    def self.from_str(str, language = :ruby19)
+      parser = Cobata::Parsers.get language
+      tree = parser.parse str
       Individual.new tree
     end
     

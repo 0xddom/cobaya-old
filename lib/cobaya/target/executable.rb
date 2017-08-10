@@ -6,7 +6,6 @@ module Cobaya
   # The input is received through stdin.
   #--
   # TODO:
-  # - Añadir la opcion de enviar por parametro
   # - ASAN_OPTIONS=coverage=1:coverage_dir=./cov
   # - Convertir esta clase en clase abstracta con las capacidades de ejecutar y
   #   configurar. Y relegar en dos hijos la ejecución por stdin y fichero.

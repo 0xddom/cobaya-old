@@ -66,6 +66,10 @@ module Cobaya
       @normalized = score / max
     end
 
+    def interesting?
+      false
+    end
+
     private
     def get_crash_modifiers(crash)
       if crash.nil?

@@ -12,9 +12,14 @@ module Cobaya
   class Fuzzer
 
     ##
+    # The amount of crashes found by the fuzzer
+    attr_reader :crashes
+    
+    ##
     # Creates a new instance
     def initialize(ctx)
-      @ctx = ctx      
+      @ctx = ctx
+      @crashes = 0
     end
 
     ##
@@ -26,11 +31,11 @@ module Cobaya
 
     private
     def fuzzing_loop
-      for sample, _ in @ctx.corpus
+      for sample, fitness in @ctx.corpus
         print '.'
         for target in @ctx.targets
           target.exec sample do |result|
-            process_result sample, target, result
+            process_result sample, target, result, fitness
           end
         end
       end
@@ -47,7 +52,15 @@ module Cobaya
     def setup
     end
 
-    def process_result(sample, target, result)
+    def process_result(sample, target, result, fitness)
+      if result.crash?
+        @crashes += 1
+        @ctx.crash_handler << sample
+      end
+
+      if fitness.interesting?
+        @ctx.corpus << sample
+      end
     end
   end
 end

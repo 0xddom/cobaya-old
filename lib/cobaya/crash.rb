@@ -1,4 +1,7 @@
 module Cobaya
+
+  ##
+  # Deprecated
   class Crash
     attr_reader :status, :path
     attr_accessor :stdout, :stderr, :stdin
@@ -41,5 +44,22 @@ module Cobaya
       @status.coredump?
     end
     
+  end
+
+  class CrashHandler
+    attr_reader :path
+    
+    def initialize(path)
+      @path = File.absolute_path path
+    end
+
+    def <<(crash)
+      sha = Digest::SHA256
+      hash = sha.hexdigest crash
+
+      File.open(File.join(@path, hash), 'w') { |fd|
+        fd.write crash
+      }
+    end
   end
 end

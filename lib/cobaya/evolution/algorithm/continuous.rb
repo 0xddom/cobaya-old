@@ -4,12 +4,13 @@ module Cobaya
   #--
   # TODO:
   # - Send an empty sample if coverage is used to stablish the baseline
+  # - Add mutations and crossovers
   class ContinuousEvolution < BaseEvolution
 
     ##
     # Creates a new instance of the algorithm
-    def initialize(pop)
-      super pop
+    def initialize(ctx)
+      super ctx
     end
 
     ##
@@ -26,7 +27,7 @@ module Cobaya
 
     private
     def generate_new_indv
-      Individual.new Parser::CurrentRuby.parse ctx.population.sample
+      indv = Individual.from_str ctx.population.sample
       new_indv = indv.clone
 
       # Mutate the new individual
