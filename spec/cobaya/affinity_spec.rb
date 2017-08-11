@@ -11,7 +11,8 @@ RSpec::describe Cobaya::Affinity do
 
       expect([cpu_id]).to eq cpu_aff
     else
-      expect { Cobaya::Affinity.choose_available_cpu }.to raise_error
+      expect { Cobaya::Affinity.choose_available_cpu }.
+        to raise_error Cobaya::Affinity::UnsupportedPlatformError
     end
   end
 

@@ -132,6 +132,7 @@ static VALUE choose_available_cpu(VALUE self) {
 #endif
 }
 
+#if defined(__linux__)
 /**
  * Sets the CPU affinity. Returns -1 if it was not possible.
  */
@@ -215,6 +216,7 @@ static int select_available_cpu() {
   return cpu_id;
 }
 
+#endif
 
 #ifdef __cplusplus
 }
