@@ -12,6 +12,7 @@ pipelines:
           - bundler
         script:
           - bundle install
+          - bundle exec rake compile
           - bundle exec rspec
           - bundle exec rake rdoc
           - bundle exec gem build cobaya.gemspec
