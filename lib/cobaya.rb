@@ -12,6 +12,7 @@ module Cobaya
   require 'digest'
   require 'json'
 
+  require 'cobaya/affinity'
   require 'cobaya/file_utils'
   require 'cobaya/version'
   require 'cobaya/parsers'

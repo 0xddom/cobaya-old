@@ -41,5 +41,6 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'hanna-nouveau', '~> 1.0'
     s.add_development_dependency 'simplecov', '~> 0.14'
     s.add_development_dependency 'rake-compiler'
+    s.add_development_dependency 'os'
 
 end
