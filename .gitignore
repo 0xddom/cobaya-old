@@ -8,6 +8,8 @@ population
 cov
 crashes_uniq
 coverage
-.#*manual/_book
+**/.#*
+manual/_book
 pkg
 **/*.bundle
+**/*.so

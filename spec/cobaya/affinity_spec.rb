@@ -14,4 +14,8 @@ RSpec::describe Cobaya::Affinity do
       expect { Cobaya::Affinity.choose_available_cpu }.to raise_error
     end
   end
+
+  it 'returns true if supported' do
+    expect(Cobaya::Affinity.supported?).to eq OS.linux?
+  end
 end

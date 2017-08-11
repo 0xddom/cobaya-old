@@ -35,6 +35,7 @@ VALUE eCPUNotSet = Qnil;
 void Init_affinity(void);
 static VALUE choose_available_cpu(VALUE);
 static VALUE set_to_cpu(VALUE, VALUE);
+static VALUE is_supported(VALUE);
 
 // Internal functions
 static int set_cpu_affinity(int);
@@ -51,11 +52,25 @@ void Init_affinity() {
 			      choose_available_cpu, 0);
   rb_define_singleton_method (Affinity, "set",
 			      set_to_cpu, 1);
+  rb_define_singleton_method (Affinity, "supported?",
+			      is_supported, 0);
 
   eUnsupportedPlatform = rb_define_class_under (Affinity, "UnsupportedPlatformError",
 						rb_eRuntimeError);
   eCPUNotSet = rb_define_class_under (Affinity, "CPUNotSetError",
 				      rb_eRuntimeError);
+}
+
+/**
+ * Returns true if CPU affinity is supported.
+ * False on the contrary.
+ */
+static VALUE is_supported(VALUE self) {
+#if defined(__linux__)
+  return Qtrue;
+#else
+  return Qfalse;
+#endif
 }
 
 /**
