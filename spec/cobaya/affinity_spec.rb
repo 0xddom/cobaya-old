@@ -11,7 +11,7 @@ RSpec::describe Cobaya::Affinity do
 
       expect([cpu_id]).to eq cpu_aff
     else
-      # Catch exception
+      expect { Cobaya::Affinity.choose_available_cpu }.to raise_error
     end
   end
 end

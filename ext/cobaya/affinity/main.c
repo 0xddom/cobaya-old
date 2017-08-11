@@ -28,7 +28,7 @@ VALUE Affinity = Qnil;
 // Exceptions
 VALUE eUnsupportedPlatform = Qnil;
 VALUE eCPUNotSet = Qnil;
-#define raise_cpu_err(cpu_id) rb_raise (eCPUNotSet, "Couldn't set the affinity to the CPU #%d", cpu_id)
+#define raise_cpu_err(cpu_id) rb_raise (eCPUNotSet, "Couldn't set the affinity to the CPU %d", cpu_id)
 #define raise_unsp_pltf rb_raise (eUnsupportedPlatform, "This platform doesn't support CPU affinity")
 
 // Function definitions
