@@ -9,9 +9,8 @@ module Cobaya
     #--
     # :reek:UtilityFunction
     # :reek:UncommunicativeMethodName
-    def s(sym, children = [])
-      children = [children] unless children.is_a? Array
-      Parser::AST::Node.new sym, children
+    def s(*args)
+      Parser::AST::Node.new args.shift, args
     end
   end
 end
