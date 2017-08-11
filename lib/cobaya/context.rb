@@ -10,12 +10,23 @@ module Cobaya
     attr_reader :corpus
     attr_reader :workers
 
-    def initialize(crashes, target, corpus)
+    attr_accessor :cpu
+
+    def initialize(crashes, target, corpus, cpu_aff)
       @lang = lang
       @crash_handler = crash_handler
       @targets = targets
       @logger = logger
       @corpus = corpus
+      @cpu_aff = cpu_aff
+    end
+
+    def cpu_affinity?
+      @cpu_aff
+    end
+
+    def cpu_affinity=(cpu_aff)
+      @cpu_aff = cpu_aff
     end
   end
 

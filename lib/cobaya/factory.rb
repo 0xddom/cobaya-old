@@ -13,7 +13,8 @@ module Cobaya
       FuzzingContext.new(
         target: ExecutableTargetContext.new(json['target'].split(' ')),
         corpus: evo,
-        crashes: CrashHandler.new(json['crashes'])
+        crashes: CrashHandler.new(json['crashes']),
+        cpu_aff: (json['affinity'] || true)
       )
     end
   end

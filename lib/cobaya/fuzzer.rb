@@ -32,7 +32,7 @@ module Cobaya
     private
     def fuzzing_loop
       for sample, fitness in @ctx.corpus
-        print '.'
+        #print '.'
         for target in @ctx.targets
           target.exec sample do |result|
             process_result sample, target, result, fitness
@@ -41,15 +41,16 @@ module Cobaya
       end
     end
 
-#    def prepare_next_sample
-#      sample = @inputs[@prng.rand @inputs.length]
-#      mutation = Mutation.from_file sample, @lang
-#      mutated_sample = mutation.mutate
-#      fragment = Fragment.new mutated_sample, @current_sample_file.path
-#      fragment.write_to_io @current_sample_file
-#    end
-
     def setup
+      if @ctx.cpu_affinity?
+        begin
+          @ctx.cpu = Affinity.choose_available_cpu
+        rescue Affinity::CPUNotSetError => _
+          @ctx.cpu_affinity = false
+        rescue Affinity::PlatformNotSupportedError
+          @ctx.cpu_affinity = false
+        end
+      end
     end
 
     def process_result(sample, target, result, fitness)
