@@ -17,10 +17,13 @@ Gem::Specification.new do |s|
 #MSG
 
     #Manifest
-    s.files = `git ls-files`.split("\n")
+    #s.files = `git ls-files`.split("\n")
+    s.files = Dir['ext/**/*.{rb,c}'] + Dir['lib/**/*.rb']
     s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
     s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
     s.require_paths = ['lib']
+
+    s.extensions << 'ext/cobaya/affinity/extconf.rb'
 
 
     s.add_runtime_dependency 'thor', '~> 0.19'
@@ -37,5 +40,6 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'rubycritic', '~> 3.1'
     s.add_development_dependency 'hanna-nouveau', '~> 1.0'
     s.add_development_dependency 'simplecov', '~> 0.14'
+    s.add_development_dependency 'rake-compiler'
 
 end

@@ -4,7 +4,7 @@ module Cobaya::FileUtils
     Array.new(n) do
       f = Tempfile.new
       f.sync = true
-        f
+      f
     end
   end
   

@@ -135,20 +135,6 @@ module Cobaya
   module LiteralGenerator
 
     include Literals
-    
-    ##
-    # Returns the table of literals
-    def self.literals
-      [
-        [:true,  0.1,  True,  []],
-        [:false, 0.2,  False, []],
-        [:nil,   0.5,  Nil,   []],
-        [:int,   0.7,  Int,   [5_000_000_000, 0.5]],
-        [:float, 0.8,  Float, [5_000_000_000, 0.5]],
-        [:str,   0.95, Str,   [23, true]],
-        [:sym,   1,    Sym,   [10]]
-      ]
-    end
 
     ##
     # Checks if the given symbol is a literal
@@ -167,6 +153,20 @@ module Cobaya
       end
 
       Literal.new(*last)
+    end
+
+    private
+
+    def self.literals
+      [
+        [:true,  0.1,  True,  []],
+        [:false, 0.2,  False, []],
+        [:nil,   0.5,  Nil,   []],
+        [:int,   0.7,  Int,   [5_000_000_000, 0.5]],
+        [:float, 0.8,  Float, [5_000_000_000, 0.5]],
+        [:str,   0.95, Str,   [23, true]],
+        [:sym,   1,    Sym,   [10]]
+      ]
     end
   end
 end

@@ -1,5 +1,8 @@
 require 'rdoc/task'
 require 'cobaya/version'
+require 'rake/extensiontask'
+require 'rake/clean'
+
 
 RDoc::Task.new do |rdoc|
   version = Cobaya::VERSION
@@ -13,3 +16,12 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include '*.md'
   rdoc.rdoc_files.include File.join 'lib', '**', '*.rb'
 end
+
+spec = Gem::Specification.load('cobaya.gemspec')
+
+Gem::PackageTask.new(spec) do |_|
+end
+
+Rake::ExtensionTask.new('cobaya/affinity', spec)
+
+CLEAN.include('coverage')
