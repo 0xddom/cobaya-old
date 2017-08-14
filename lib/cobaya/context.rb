@@ -8,15 +8,14 @@ module Cobaya
     attr_reader :crash_handler
     attr_reader :targets
     attr_reader :corpus
-    attr_reader :workers
 
     attr_accessor :cpu
 
-    def initialize(crashes, target, corpus, cpu_aff)
-      @lang = lang
+    def initialize(crash_handler, targets, corpus, cpu_aff)
+      #@lang = lang
       @crash_handler = crash_handler
       @targets = targets
-      @logger = logger
+      #@logger = logger
       @corpus = corpus
       @cpu_aff = cpu_aff
     end

@@ -32,7 +32,6 @@ module Cobaya
     private
     def fuzzing_loop
       for sample, fitness in @ctx.corpus
-        #print '.'
         for target in @ctx.targets
           target.exec sample do |result|
             process_result sample, target, result, fitness
@@ -62,6 +61,7 @@ module Cobaya
       if fitness.interesting?
         @ctx.corpus << sample
       end
+
     end
   end
 end
