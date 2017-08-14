@@ -1,6 +1,13 @@
 module Cobaya
+  module Mutation
+    def mutations
+      [LiteralMutation]
+    end
+  end
+  
   class BaseEvolution
     include Enumerable
+    include Mutation
 
     ##
     # The evolution context

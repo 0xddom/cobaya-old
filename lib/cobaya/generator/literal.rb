@@ -1,10 +1,13 @@
 module Cobaya
 
+  module Literals
+  end
+  
   ##
   # Implements a method that generates the true keyword
   class Literals::True
     def generate
-      true
+      [:true]
     end
   end
 
@@ -12,7 +15,7 @@ module Cobaya
   # Implements a method that generates the false keyword
   class Literals::False
     def generate
-      false
+      [:false]
     end
   end
 
@@ -20,7 +23,7 @@ module Cobaya
   # Implements a method that generates the nil keyword
   class Literals::Nil
     def generate
-      nil
+      [:nil]
     end
   end
   
@@ -37,10 +40,9 @@ module Cobaya
       neg = rand < @neg_prob
       num = rand @limit
       if neg
-        -num
-      else
-        num
+        num = -num
       end
+      [:int, num]
     end
   end
 
@@ -57,10 +59,9 @@ module Cobaya
       neg = rand < @neg_prob
       num = rand(@limit) * rand
       if neg
-        -num
-      else
-        num
+        num = -num
       end
+      [:float, num]
     end
   end
 
@@ -73,7 +74,7 @@ module Cobaya
     end
     
     def generate
-      source.shuffle[0,@max_len].join
+      [:str, source.shuffle[0,@max_length].join]
     end
 
     private
@@ -89,12 +90,14 @@ module Cobaya
   ##
   # Implements a method that generates symbols
   class Literals::Sym
+    include Cobaya::Literals
+    
     def initialize(length)
       @str_gen = Str.new(length, true)
     end
     
     def generate
-      @str_gen.generate.to_sym
+      [:sym, @str_gen.generate[1].to_sym]
     end
   end
   
@@ -126,7 +129,7 @@ module Cobaya
     ##
     # Builds a s-exp with a literal expression
     def generate
-      s(sym, gen.generate)
+      s(*gen.generate)
     end
   end
   
@@ -145,11 +148,11 @@ module Cobaya
     ##
     # Returns a random literal
     def self.random
-      p = rand
+      prob = rand
       last = nil
       for lit in literals
-        last = sym
-        break if lit[1] < p
+        last = lit
+        break if lit[1] > prob
       end
 
       Literal.new(*last)

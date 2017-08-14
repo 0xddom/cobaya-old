@@ -4,7 +4,7 @@ module Cobaya
   #--
   # TODO:
   # - Send an empty sample if coverage is used to stablish the baseline
-  # - Add mutations and crossovers
+  # - Add crossovers
   class ContinuousEvolution < BaseEvolution
 
     ##
@@ -28,11 +28,9 @@ module Cobaya
     private
     def generate_new_indv
       indv = Individual.from_str ctx.population.sample
-      new_indv = indv.clone
+      new_tree = mutations.sample.mutate indv
 
-      # Mutate the new individual
-      
-      new_indv
+      Individual.new new_tree
     end
   end
 end
