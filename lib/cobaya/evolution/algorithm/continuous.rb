@@ -28,8 +28,8 @@ module Cobaya
     private
     def generate_new_indv
       indv = Individual.from_str ctx.population.sample
-      new_tree = mutations.sample.mutate indv
-
+      new_tree = mutations.sample.mutate indv.tree
+      
       Individual.new new_tree
     end
   end

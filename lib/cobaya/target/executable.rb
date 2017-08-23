@@ -36,11 +36,14 @@ module Cobaya
     # Executes the command with the input.
     def exec(input)
       @forced = false
-      if @send_to_stdin
-        result = stdin_exec(input)
-      else
-        result = file_param_exec(input)
-      end
+      input, out, err = if @send_to_stdin
+                          stdin_exec(input)
+                        else
+                          file_param_exec(input)
+                        end
+      @ctx.logger.debug { "Executed #{cmd}" }
+      rewind out, err
+      result = build_result input, out, err
       
       yield result
     end
@@ -59,9 +62,7 @@ module Cobaya
         stdin.close
       end
 
-      rewind out, err
-
-      build_result input, out, err
+      return [input, out, err]
     end
 
     def file_param_exec(input)
@@ -73,10 +74,8 @@ module Cobaya
 
       build_proc(@cmd, stdout: out, stderr: err)
       run_process
-
-      rewind out, err
-
-      build_result input, out, err
+      
+      return [input, out, err]
     end
 
     def crash?
@@ -100,6 +99,7 @@ module Cobaya
       process.poll_for_exit 3
     rescue ChildProcess::TimeoutError
       process.stop
+      @ctx.logger.info { "The child process timeouted" }
       @forced = true
     end
 

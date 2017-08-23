@@ -1,12 +1,24 @@
-# mode: ruby
+# -*- ruby -*-
 
 $VERBOSE = nil
 
 require 'cobaya'
+require 'logger'
 include Cobaya
 
-evo = ContinuousEvolution.new DirCorpus.new './tests'
-ctx = FuzzingContext.new(:mruby, nil, [], STDOUT, evo, 1)
+evo_ctx = EvolutionContext.new DirCorpus.new './tests'
+evo = ContinuousEvolution.new evo_ctx
+logger = Logger.new STDOUT,
+                    level: Logger::DEBUG,
+                    progname: 'cobaya'
+target_ctx = ExecutableTargetContext.new ['/bin/cat'], logger
+target = ExecutableTarget.new target_ctx
+ctx = FuzzingContext.new(:mruby,
+                         CrashHandler.new('./crashes'),
+			 [target],
+                         logger,
+                         evo,
+                         true)
 
 fuzzer = Fuzzer.new ctx
 

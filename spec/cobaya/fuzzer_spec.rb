@@ -81,8 +81,10 @@ RSpec.describe Cobaya::Fuzzer do
     target = DummyTarget.new(false)
     
     ctx = Cobaya::FuzzingContext.new(
+      nil,
       [],
       [target],
+      VoidLogger.new,
       corpus,
       false
     )
@@ -109,8 +111,10 @@ RSpec.describe Cobaya::Fuzzer do
     crashes = []
     
     ctx = Cobaya::FuzzingContext.new(
+      nil, 
       crashes,
       [target],
+      VoidLogger.new,
       corpus,
       false
     )
@@ -135,8 +139,10 @@ RSpec.describe Cobaya::Fuzzer do
     crashes = []
     
     ctx = Cobaya::FuzzingContext.new(
+      nil,
       crashes,
       [target],
+      VoidLogger.new,
       corpus,
       false
     )

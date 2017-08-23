@@ -31,7 +31,7 @@ module Cobaya
     end
 
     def self.from_str(str, language = :ruby19)
-      parser = Cobata::Parsers.get language
+      parser = Cobaya::Parsers.get language
       tree = parser.parse str
       Individual.new tree
     end

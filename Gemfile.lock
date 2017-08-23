@@ -139,6 +139,7 @@ GEM
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
+    void_logger (0.1)
 
 PLATFORMS
   ruby
@@ -152,6 +153,7 @@ DEPENDENCIES
   rspec (~> 3)
   rubycritic (~> 3.1)
   simplecov (~> 0.14)
+  void_logger
 
 BUNDLED WITH
    1.15.3

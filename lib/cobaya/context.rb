@@ -1,21 +1,20 @@
 module Cobaya
   class BaseContext
-    #attr_accessor :logger
+    attr_reader :logger
   end
   
   class FuzzingContext < BaseContext
-    #attr_reader :lang
+    attr_reader :lang
     attr_reader :crash_handler
     attr_reader :targets
     attr_reader :corpus
+    attr_reader :logger
 
-    attr_accessor :cpu
-
-    def initialize(crash_handler, targets, corpus, cpu_aff)
-      #@lang = lang
+    def initialize(lang, crash_handler, targets, logger, corpus, cpu_aff)
+      @lang = lang
       @crash_handler = crash_handler
       @targets = targets
-      #@logger = logger
+      @logger = logger
       @corpus = corpus
       @cpu_aff = cpu_aff
     end
@@ -36,7 +35,8 @@ module Cobaya
     #attr_reader :spawn
     #attr_reader :cov
 
-    def initialize(cmd)#, timeout, asan, spawn, cov, sts)
+    def initialize(cmd, logger)#, timeout, asan, spawn, cov, sts)
+      @logger = logger
       @cmd = cmd
       #@timeout = timeout
       #@asan = asan
@@ -45,6 +45,14 @@ module Cobaya
     end
   end
 
+  class EvolutionContext < BaseContext
+    attr_reader :population
+
+    def initialize(population)
+      @population = population
+    end
+  end
+  
   require 'cobaya/context/error'
   require 'cobaya/context/builder'
 end

@@ -42,5 +42,6 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'simplecov', '~> 0.14'
     s.add_development_dependency 'rake-compiler'
     s.add_development_dependency 'os'
+    s.add_development_dependency 'void_logger'
 
 end
