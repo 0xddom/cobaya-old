@@ -1,0 +1,37 @@
+# -*- mode: ruby -*-
+
+$VERBOSE = nil
+
+require 'cobaya'
+
+if ARGV.length < 2
+  $stderr.puts "[USAGE] #{$0} <mutation> <input>"
+  exit 1
+end
+
+iters =  ARGV.length > 2 ? ARGV[2].to_i : 1
+  
+
+puts "Taking #{ARGV[1]} as input"
+
+indv = Cobaya::Individual.from_file ARGV[1]
+mut = ARGV[0].to_sym
+
+case mut
+when :literal
+  puts "Choosen literal substitution mutation"
+  mut = Cobaya::Mutation::LiteralMutation
+else
+  $stderr.puts "Mutation not recognized"
+  exit 1
+end
+
+iters.times {
+  new_tree = mut.mutate indv.tree
+  
+  new_indv = Cobaya::Individual.new new_tree
+  
+  print "=-" * 7, " NEW CODE ", "=-" * 8, "\n"
+  new_indv.write_to_io STDOUT
+}
+puts "=-" * 20

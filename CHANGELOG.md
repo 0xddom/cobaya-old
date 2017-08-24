@@ -10,7 +10,7 @@ CHANGELOG
 0.3
 -------
 
-* Rediseño de la arquitectura del fuzzer y creación de un roadmap de cara a una implementación mas completa.
+* Rediseño de la arquitectura del fuzzer y creación detango un roadmap de cara a una implementación mas completa.
 
 0.2
 -------
