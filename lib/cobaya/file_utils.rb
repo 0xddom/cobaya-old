@@ -1,5 +1,9 @@
+##
+# This module implements methods for handling files
 module Cobaya::FileUtils
 
+  ##
+  # Creates temporary files with sync turned on
   def synced_tmpf(n = 1)
     Array.new(n) do
       f = Tempfile.new
@@ -7,10 +11,10 @@ module Cobaya::FileUtils
       f
     end
   end
-  
+
+  ##
+  # Rewinds all the files in the arguments
   def rewind(*files)
-    for file in files
-      file.rewind
-    end
+    files.each(&:rewind)
   end
 end

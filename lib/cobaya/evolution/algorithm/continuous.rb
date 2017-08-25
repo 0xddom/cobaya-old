@@ -3,7 +3,6 @@ module Cobaya
   # This class implements a continuous genetic algorithm
   #--
   # TODO:
-  # - Send an empty sample if coverage is used to stablish the baseline
   # - Add crossovers
   class ContinuousEvolution < BaseEvolution
 

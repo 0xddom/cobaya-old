@@ -1,4 +1,6 @@
 module Cobaya
+  require 'cobaya/version'
+
   require 'parser/ruby19'
   require 'unparser'
   require 'singleton'
@@ -14,7 +16,6 @@ module Cobaya
 
   require 'cobaya/affinity'
   require 'cobaya/file_utils'
-  require 'cobaya/version'
   require 'cobaya/parsers'
   require 'cobaya/helpers/sexp'
 

@@ -4,40 +4,53 @@ module Cobaya
       [Generative]
     end
   end
-  
+
+  ##
+  # This class stores the data of an individual of a population.
   class Individual < Fragment
     include Cobaya::Mutators
-    
+
+    ##
+    # The fitness value of the individual
     attr_reader :fitness
-    
+
+    ##
+    # Initializes a new instance of the individual
     def initialize(tree)
       super tree
       @fitness = Fitness.new tree
     end
 
+    ##
+    # Deprecated
     def evaluate
       @fitness.structure
     end
 
+    ##
+    # Deprecated
     def trim
       ruby19 = Cobaya::Generators::Ruby19.new
       trim_tree tree, ruby19.context, ruby19
     end
 
+    ##
+    # Loads the individual from a file
     def self.from_file(file, language = :ruby19)
-      parser = Cobaya::Parsers.get language
-      tree = parser.parse File.read file
-      Individual.new tree
+      from_str File.read(file), language
     end
 
+    ##
+    # Loads the individual from an String
     def self.from_str(str, language = :ruby19)
       parser = Cobaya::Parsers.get language
       tree = parser.parse str
-      Individual.new tree
+      new tree
     end
     
     ##
     # Returns a new individual with a mutated tree
+    # Deprecated
     def mutate(retries = 0)
       if retries >= 10_000
         $stderr.puts "Couldn't mutate the sample after 10000 retries. Aborting..."
@@ -51,6 +64,8 @@ module Cobaya
       end
     end
 
+    ##
+    # Deprecated
     def breed(other)
       OnePointCrossover.new(self, other).crossover
     end
