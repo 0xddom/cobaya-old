@@ -1,24 +1,25 @@
 CHANGELOG
 =======
 
-0.4 (En desarrollo)
+0.4 (WIP)
 -------
 
-* Mutación de los literales de las muestras
-* Sistema de logging
+* Mutation of literal tokens in the samples
+* Logging system
+* The targets are run with empty input once before fuzzing if coverage is set
 
 0.3
 -------
 
-* Rediseño de la arquitectura del fuzzer y creación detango un roadmap de cara a una implementación mas completa.
+* Redesign of the arquitecture
 
 0.2
 -------
 
-* Prototipo final
+* Final prototipe
 
 0.1
 -------
 
-* Prototipo inicial
+* Initial prototipe
 
