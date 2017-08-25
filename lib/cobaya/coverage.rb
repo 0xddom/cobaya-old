@@ -1,52 +1,85 @@
 module Cobaya
+
+  ##
+  # This class stores a unique list of addresses
   class Coverage
+    ##
+    # A {Set}[rdoc-ref:Set] that stores the addresses
+    attr_reader :addresses
+
+    ##
+    # Initializes the instance
     def initialize
       @addresses = Set.new
     end
 
+    ##
+    # Adds addresses to the list. The duplicates are discarted
     def add(cov)
-      cov_set = Set.new cov
-
-      if @addresses.size == 0
-        @addresses |= cov_set
-        return 1
-      else
-        diff = cov_set - @addresses
-        @addresses |= cov_set
-        diff.size
-      end
+      @addresses |= Set.new cov
     end
   end
 
+  ##
+  # This class handles the parsing of SanitizerCoverage files
   class CovFile
     attr_reader :addresses
 
-    def self.from_pid(cov_dir, bin, pid, autoload = true)
+    ##
+    # Initializes a new instance using the arguments to build the filename
+    def self.from_pid(cov_dir, bin, pid)
       filename = File.join cov_dir, "#{File.basename bin}.#{pid}.sancov"
-      new filename, autoload
-    end
-    
-    def initialize(path, autoload = true)
-      @fd = File.open path, 'rb'
-      @addresses = []
-      read_addresses if autoload
+      new filename
     end
 
-    def read_addresses
-      _, offsiz = get_magic
-      format = offsiz == 8 ? 'I<' : 'L<'
-      while adress = @fd.read(offsiz)
-        @addresses << adress.unpack(format)
+    ##
+    # Initializes a new instance using the arguments to build the filename.
+    # Also reads the addresses before returning the instance
+    def self.read_from_pid(cov_dir, bin, pid)
+      instance = from_pid(cov_dir, bin, pid)
+      instance.load
+      return instance
+    end
+
+    ##
+    # Creates a new instance and automatically reads the file
+    def self.read(path)
+      instance = new path
+      instance.load
+      return instance
+    end
+
+    ##
+    # Initializes a new instance and read the addresses if autoload is set
+    def initialize(path)
+      @fd = File.open path, 'rb'
+      @addresses = []
+    end
+
+    ##
+    # Returns the path of the file
+    def path
+      @fd.path
+    end
+    
+    ##
+    # Reads the addresses from the coverage file
+    def load
+      _, offsiz = parse_header
+      format = offsiz == 8 ? 'L!' : 'I!'
+      while address = @fd.read(offsiz)
+        
+        @addresses << address.unpack(format)
       end
       @addresses.flatten!
     end
 
     private
-    def get_magic
+    def parse_header
       magic = @fd.read 8
       return nil unless valid_magic? magic
-      offsiz = magic[0] == 'd' ? 8 : 4
-
+      offsiz = magic[7] == 'd' ? 8 : 4
+      
       [magic, offsiz]
     end
 

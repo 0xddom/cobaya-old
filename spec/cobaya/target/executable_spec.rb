@@ -7,7 +7,7 @@ RSpec.describe Cobaya::ExecutableTarget do
   end
   
   it "runs true with an empty input" do
-    ctx = Cobaya::ExecutableTargetContext.new([path('true')], VoidLogger.new)
+    ctx = Cobaya::ExecutableTargetContext.new([path('true')], VoidLogger.new, false)
     target = Cobaya::ExecutableTarget.new ctx
 
     target.exec '' do |result|
@@ -17,7 +17,7 @@ RSpec.describe Cobaya::ExecutableTarget do
 
   it "runs cat with input" do
     input = 'test input'
-    ctx = Cobaya::ExecutableTargetContext.new([path('cat')], VoidLogger.new)
+    ctx = Cobaya::ExecutableTargetContext.new([path('cat')], VoidLogger.new, false)
     target = Cobaya::ExecutableTarget.new ctx
 
     target.exec input do |result|
@@ -28,7 +28,7 @@ RSpec.describe Cobaya::ExecutableTarget do
 
   it 'runs cat from a file' do
     input = "test input\nsecond line"
-    ctx = Cobaya::ExecutableTargetContext.new([path('cat'), '{}'], VoidLogger.new)
+    ctx = Cobaya::ExecutableTargetContext.new([path('cat'), '{}'], VoidLogger.new, false)
     target = Cobaya::ExecutableTarget.new ctx
 
     target.exec input do |result|
@@ -39,7 +39,7 @@ RSpec.describe Cobaya::ExecutableTarget do
 
   it 'runs cat from a file with command line arguments' do
     input = "test input\nsecond line"
-    ctx = Cobaya::ExecutableTargetContext.new([path('cat'), '-u', '{}'], VoidLogger.new)
+    ctx = Cobaya::ExecutableTargetContext.new([path('cat'), '-u', '{}'], VoidLogger.new, false)
     target = Cobaya::ExecutableTarget.new ctx
 
     target.exec input do |result|

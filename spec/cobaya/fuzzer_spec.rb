@@ -48,8 +48,10 @@ RSpec.describe Cobaya::Fuzzer do
   end
 
   class DummyResult
+    attr_reader :meta
     def initialize(crash)
       @crash = crash
+      @meta = {}
     end
     def crash?
       @crash
@@ -58,9 +60,17 @@ RSpec.describe Cobaya::Fuzzer do
   
   class DummyTarget
     attr_reader :received
+    attr_reader :ctx
+    
     def initialize(crash)
       @received = []
       @crash = crash
+
+      @ctx = (Class.new do
+        def cov?
+          false
+        end
+      end).new
     end
     
     def exec(input)
