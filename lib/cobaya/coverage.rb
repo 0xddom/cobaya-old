@@ -4,7 +4,7 @@ module Cobaya
   # This class stores a unique list of addresses
   class Coverage
     ##
-    # A {Set}[rdoc-ref:Set] that stores the addresses
+    # A {Set}[https://ruby-doc.org/stdlib-2.4.1/libdoc/set/rdoc/Set.html] that stores the addresses
     attr_reader :addresses
 
     ##
@@ -23,6 +23,9 @@ module Cobaya
   ##
   # This class handles the parsing of SanitizerCoverage files
   class CovFile
+
+    ##
+    # The address list read from the file
     attr_reader :addresses
 
     ##
@@ -54,6 +57,7 @@ module Cobaya
     def initialize(path)
       @fd = File.open path, 'rb'
       @addresses = []
+      @loaded = false
     end
 
     ##
@@ -61,14 +65,20 @@ module Cobaya
     def path
       @fd.path
     end
+
+    ##
+    # Returns whenever the file has been loaded
+    def loaded?
+      @loaded
+    end
     
     ##
     # Reads the addresses from the coverage file
     def load
+      @loaded = true
       _, offsiz = parse_header
       format = offsiz == 8 ? 'L!' : 'I!'
       while address = @fd.read(offsiz)
-        
         @addresses << address.unpack(format)
       end
       @addresses.flatten!
