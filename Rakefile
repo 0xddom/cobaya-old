@@ -16,6 +16,7 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include 'README*'
   rdoc.rdoc_files.include '*.md'
   rdoc.rdoc_files.include File.join 'lib', '**', '*.rb'
+  rdoc.rdoc_files.include File.join 'ext', '**', '*.c'
 end
 
 spec = Gem::Specification.load('cobaya.gemspec')

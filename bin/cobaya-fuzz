@@ -11,7 +11,7 @@ evo = ContinuousEvolution.new evo_ctx
 logger = Logger.new STDOUT,
                     level: Logger::DEBUG,
                     progname: 'cobaya'
-target_ctx = ExecutableTargetContext.new ['/bin/cat'], logger
+target_ctx = ExecutableTargetContext.new ['/usr/bin/false'], logger
 target = ExecutableTarget.new target_ctx
 ctx = FuzzingContext.new(:mruby,
                          CrashHandler.new('./crashes'),
@@ -22,4 +22,8 @@ ctx = FuzzingContext.new(:mruby,
 
 fuzzer = Fuzzer.new ctx
 
-fuzzer.run
+begin
+  fuzzer.run
+rescue => e
+  logger.fatal "The fuzzer found a not recuperable error: #{e}"
+end

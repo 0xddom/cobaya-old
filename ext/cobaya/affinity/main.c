@@ -41,7 +41,7 @@ static VALUE is_supported(VALUE);
 static int set_cpu_affinity(int);
 static int select_available_cpu(void);
 
-/**
+/*
  * Initializes the native ruby module
  */
 void Init_affinity() {
@@ -61,7 +61,7 @@ void Init_affinity() {
 				      rb_eRuntimeError);
 }
 
-/**
+/*
  * Returns true if CPU affinity is supported.
  * False on the contrary.
  */
@@ -73,7 +73,7 @@ static VALUE is_supported(VALUE self) {
 #endif
 }
 
-/**
+/*
  * Sets the affinity to an specific CPU.
  * Raises an exception is it was not possible.
  */
@@ -93,7 +93,7 @@ static VALUE set_to_cpu(VALUE self, VALUE cpu) {
 #endif
 }
 
-/**
+/*
  * Looks for a free cpu and sets the affinity to it.
  * Returns the ID of the CPU. Raises an exception if
  * is not a supported platform or if an available
@@ -133,7 +133,7 @@ static VALUE choose_available_cpu(VALUE self) {
 }
 
 #if defined(__linux__)
-/**
+/*
  * Sets the CPU affinity. Returns -1 if it was not possible.
  */
 static int set_cpu_affinity(int cpu_id) {
@@ -145,7 +145,7 @@ static int set_cpu_affinity(int cpu_id) {
   return sched_setaffinity (getpid (), sizeof (mask), &mask);
 }
 
-/**
+/*
  * Looks for a free CPU core. Returns -1 if nothing found and
  * errno is set.
  */

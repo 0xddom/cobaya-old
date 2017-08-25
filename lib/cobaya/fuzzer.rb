@@ -50,7 +50,7 @@ module Cobaya
           @ctx.cpu = Affinity.choose_available_cpu
         rescue Affinity::CPUNotSetError => _
           @ctx.cpu_affinity = false
-          @ctx.logger.warn "The affinity was not set. Probably you are running to much instances of cobaya or other CPU heavy process"
+          @ctx.logger.warn "The affinity couldn't be set. Probably you are running to much instances of cobaya or other CPU heavy process"
         rescue Affinity::UnsupportedPlatformError
           @ctx.cpu_affinity = false
           @ctx.logger.warn "The current platform doesn't support CPU affinity"
@@ -58,9 +58,35 @@ module Cobaya
       else
         @ctx.logger.info "Not setting the CPU affinity"
       end
+
+      if true # Replace with a check if the evolution strategy uses coverage
+        @ctx.logger.info "Setting the baseline coverage information"
+        for target in @ctx.targets
+          if target.ctx.cov?
+            target.exec '' do |result|
+              process_cov_baseline target, result
+            end
+          end
+        end
+      end
     end
 
+    def process_cov_baseline(target, result)
+      if result.crash?
+        @ctx.logger.error "The target crashed with an empty input. This is probably a bug."
+        return
+      end
+      
+      unless result.meta.has_key? :cov
+        raise ArgumentError.new 'The metadata in result must have a cov key'
+      end
+
+      target.coverage_index.add result.meta[:cov].addresses
+    end
+    
     def process_result(sample, target, result, fitness)
+      @ctx.logger.debug(result.meta)
+      
       if result.crash?
         @crashes += 1
         @ctx.crash_handler << sample

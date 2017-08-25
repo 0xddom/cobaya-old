@@ -1,7 +1,5 @@
 module Cobaya
   class Coverage
-    include Singleton
-
     def initialize
       @addresses = Set.new
     end

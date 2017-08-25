@@ -3,12 +3,8 @@ module Cobaya
   
   ##
   # This class handles the execution of an executable target.
-  # The input is received through stdin.
-  #--
-  # TODO:
-  # - ASAN_OPTIONS=coverage=1:coverage_dir=./cov
-  # - Convertir esta clase en clase abstracta con las capacidades de ejecutar y
-  #   configurar. Y relegar en dos hijos la ejecución por stdin y fichero.
+  # The input is received through stdin or by command line
+  # argument as a file.
   class ExecutableTarget
     include FileUtils
     
@@ -22,6 +18,14 @@ module Cobaya
       @forced = false
       @cmd = cmd
       @process = nil
+
+      if @ctx.cov?
+        @cov_dir = Dir.mktmpdir
+      end
+      @env = {}
+      if @ctx.cov?
+        @env['ASAN_OPTIONS'] = "coverage=1:coverage_dir=#{@cov_dir}"
+      end
       
       #ChildProcess.posix_spawn = ctx.spawn
     end
@@ -91,6 +95,7 @@ module Cobaya
       process.duplex = true 
       set_fd fds[:stdout], :stdout
       set_fd fds[:stderr], :stderr
+      process.environment.merge @env
     end
 
     def run_process
@@ -104,17 +109,29 @@ module Cobaya
     end
 
     def build_result(input, output, error)
-      Result.new crash?, {
-                   input: input,
-                   output: output.read,
-                   error: error.read,
-                   forced: @forced
-                 }
+      meta = {
+        input: input,
+        output: output.read,
+        error: error.read,
+        forced: @forced
+      }
+
+      if @ctx.cov?
+        meta[:cov] = cov_file
+      end
+      
+      Result.new crash?, meta
     end
 
     def build_cmd(path)
-      @ctx.cmd.map { |arg| arg.gsub('{}', path) }
+      @ctx.cmd.map { |arg| arg.gsub '{}', path  }
     end
-    
+
+    def cov_file
+      CovFile.from_pid(@cov_dir, cmd[0], process.pid)
+    rescue Errno::ENOENT
+      @ctx.logger.fatal "You set the SanitizerCoverage option, but the target didn't yielded a coverage file. Are you fuzzing a target with SanitizerCoverage?"
+      raise ArgumentError.new "SanitizerCoverage was set but the target is not using the plugin"
+    end
   end
 end

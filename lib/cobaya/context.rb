@@ -34,14 +34,22 @@ module Cobaya
     #attr_reader :asan
     #attr_reader :spawn
     #attr_reader :cov
+    attr_reader :coverage_index
 
-    def initialize(cmd, logger)#, timeout, asan, spawn, cov, sts)
+    def initialize(cmd, logger, cov=true)#, timeout, asan, spawn, cov, sts)
       @logger = logger
       @cmd = cmd
       #@timeout = timeout
       #@asan = asan
       #@spawn = spawn
-      #@cov = cov
+      @cov = cov
+      if cov?
+        @coverage_index = Coverage.new
+      end
+    end
+
+    def cov?
+      @cov
     end
   end
 
