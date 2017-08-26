@@ -1,15 +1,9 @@
-#define _GNU_SOURCE 1
-
 #include <ruby.h>
 #include "affinity.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-#define EPROC -1
-#define EFULL -3
 
 // Modules
 VALUE Cobaya = Qnil;
@@ -26,10 +20,6 @@ void Init_affinity(void);
 static VALUE choose_available_cpu(VALUE);
 static VALUE set_to_cpu(VALUE, VALUE);
 static VALUE is_supported(VALUE);
-
-// Internal functions
-static int set_cpu_affinity(int);
-static int select_available_cpu(void);
 
 /*
  * Initializes the native ruby module

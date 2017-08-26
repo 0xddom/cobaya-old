@@ -1,6 +1,7 @@
 #include "affinity.h"
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 #include <dirent.h>
 #include <errno.h>
 #if SUPPORTED_PLATFORM
