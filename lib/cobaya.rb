@@ -34,5 +34,5 @@ module Cobaya
   require 'cobaya/collection'
   require 'cobaya/fuzzer'
   require 'cobaya/context'
-
+  require 'cobaya/factory'
 end
