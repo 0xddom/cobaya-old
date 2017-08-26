@@ -7,7 +7,6 @@ TODO
 * Invocar al programa con opciones de cobertura activadas
 * Leer el resultado de la cobertura
 * Usar esa cobertura como fitness
-* Ejecutar el programa con una entrada vacia para establecer el baseline de la cobertura
 
 0.5
 -------
