@@ -1,4 +1,4 @@
-cobaya
+[[DEPRECATED]] cobaya
 =================
 
 A genetic programming fuzzer to fuzz ruby interpreters
